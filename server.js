@@ -4,9 +4,16 @@ const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk');
 const twilio = require('twilio');
 const VoiceResponse = twilio.twiml.VoiceResponse;
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const database = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize database and queries
+database.initializeDatabase();
+const queries = database.queries;
 
 // Initialize Anthropic client
 const anthropic = new Anthropic({
@@ -36,18 +43,76 @@ if (process.env.TWILIO_ACCOUNT_SID &&
 const ENABLE_TRIAL_RESTRICTIONS = process.env.ENABLE_TRIAL_RESTRICTIONS === 'true' || false;
 
 // In-memory storage for call sessions and trial tracking
-const callSessions = new Map(); // CallSid -> { businessInfo, conversationHistory, startTime }
+const callSessions = new Map(); // CallSid -> { businessInfo, conversationHistory, startTime, businessName, from }
 const trialPhoneNumbers = new Set(); // Phone numbers that have used their free trial
-const businessSessions = new Map(); // SessionId -> businessInfo (for linking form to call)
-let activeSessionId = null; // The session ID for the next incoming call
+const businessSessions = new Map(); // SessionId -> { businessInfo, createdAt, sessionId }
+const twilioNumberToSession = new Map(); // Twilio number -> SessionId mapping for multi-number support
 
 console.log(`Trial restrictions: ${ENABLE_TRIAL_RESTRICTIONS ? 'ENABLED' : 'DISABLED (Testing Mode)'}`);
 
+// Helper function to get active session (most recent within last 30 minutes)
+function getActiveSession() {
+  const now = Date.now();
+  const thirtyMinutesAgo = now - (30 * 60 * 1000);
+
+  let mostRecentSession = null;
+  let mostRecentTime = 0;
+
+  for (const [sessionId, data] of businessSessions.entries()) {
+    if (data.createdAt > thirtyMinutesAgo && data.createdAt > mostRecentTime) {
+      mostRecentSession = sessionId;
+      mostRecentTime = data.createdAt;
+    }
+  }
+
+  return mostRecentSession;
+}
+
+// Clean up old sessions (older than 1 hour)
+setInterval(() => {
+  const now = Date.now();
+  const oneHourAgo = now - (60 * 60 * 1000);
+
+  for (const [sessionId, data] of businessSessions.entries()) {
+    if (data.createdAt < oneHourAgo) {
+      console.log(`Cleaning up old session: ${sessionId} for business: ${data.businessInfo.businessName}`);
+      businessSessions.delete(sessionId);
+    }
+  }
+}, 10 * 60 * 1000); // Run every 10 minutes
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+// Session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-ai-solution-secret-key-change-this',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+  }
+}));
+
+// Authentication middleware
+function requireAuth(req, res, next) {
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+  next();
+}
+
+// API authentication middleware (for API routes)
+function requireAuthAPI(req, res, next) {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Niet geautoriseerd' });
+  }
+  next();
+}
 
 // Routes
 app.get('/', (req, res) => {
@@ -56,6 +121,262 @@ app.get('/', (req, res) => {
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
+});
+
+// Serve static pages
+app.get('/pricing', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'pricing.html'));
+});
+
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
+app.get('/login', (req, res) => {
+  // If already logged in, redirect to dashboard
+  if (req.session.userId) {
+    return res.redirect('/dashboard');
+  }
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/dashboard/setup', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'setup.html'));
+});
+
+app.get('/dashboard', requireAuth, (req, res) => {
+  // For now, redirect to setup if not completed
+  const customer = queries.findCustomerById.get(req.session.userId);
+  const businessProfile = queries.findBusinessByCustomerId.get(req.session.userId);
+
+  if (!businessProfile || !businessProfile.is_setup_complete) {
+    return res.redirect('/dashboard/setup');
+  }
+
+  // TODO: Create actual dashboard page
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Dashboard - Your AI Solution</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-50">
+      <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+          <div class="flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600">Your AI Solution</h1>
+            <div class="space-x-4">
+              <span>${customer.email}</span>
+              <a href="/api/logout" class="text-gray-700 hover:text-blue-600">Uitloggen</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="max-w-7xl mx-auto px-4 py-12">
+        <h2 class="text-3xl font-bold mb-4">Welkom bij Your AI Solution!</h2>
+        <p class="text-gray-600">Uw dashboard komt binnenkort beschikbaar.</p>
+        <div class="mt-8">
+          <a href="/dashboard/setup" class="bg-blue-600 text-white px-6 py-3 rounded-lg inline-block">Configuratie aanpassen</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// Signup API
+app.post('/api/signup', async (req, res) => {
+  try {
+    const { business_name, email, password, confirm_password, plan, terms } = req.body;
+
+    // Validation
+    if (!business_name || !email || !password || !confirm_password) {
+      return res.status(400).json({ error: 'Vul alle verplichte velden in' });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ error: 'Wachtwoord moet minimaal 8 karakters bevatten' });
+    }
+
+    if (password !== confirm_password) {
+      return res.status(400).json({ error: 'Wachtwoorden komen niet overeen' });
+    }
+
+    if (!terms) {
+      return res.status(400).json({ error: 'U moet akkoord gaan met de algemene voorwaarden' });
+    }
+
+    // Check if email already exists
+    const existingCustomer = queries.findCustomerByEmail.get(email);
+    if (existingCustomer) {
+      return res.status(400).json({ error: 'Dit emailadres is al geregistreerd' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create customer
+    const result = queries.createCustomer.run(email, hashedPassword, business_name, plan || 'professional');
+    const customerId = result.lastInsertRowid;
+
+    // Create business profile
+    queries.createBusinessProfile.run(customerId, business_name);
+
+    // Log in the user
+    req.session.userId = customerId;
+    req.session.userEmail = email;
+
+    console.log(`[SIGNUP] New customer registered: ${email} (ID: ${customerId})`);
+
+    // Send welcome email (log for now)
+    console.log(`[EMAIL] Welcome email would be sent to: ${email}`);
+
+    res.json({ success: true, redirect: '/dashboard/setup' });
+
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ error: 'Er is een fout opgetreden. Probeer het opnieuw.' });
+  }
+});
+
+// Login API
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Vul alle velden in' });
+    }
+
+    // Find customer
+    const customer = queries.findCustomerByEmail.get(email);
+    if (!customer) {
+      return res.status(401).json({ error: 'Ongeldige inloggegevens' });
+    }
+
+    // Check password
+    const passwordMatch = await bcrypt.compare(password, customer.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Ongeldige inloggegevens' });
+    }
+
+    // Log in the user
+    req.session.userId = customer.id;
+    req.session.userEmail = customer.email;
+
+    console.log(`[LOGIN] Customer logged in: ${email} (ID: ${customer.id})`);
+
+    // Check if setup is complete
+    const businessProfile = queries.findBusinessByCustomerId.get(customer.id);
+    const redirect = (!businessProfile || !businessProfile.is_setup_complete) ? '/dashboard/setup' : '/dashboard';
+
+    res.json({ success: true, redirect });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Er is een fout opgetreden. Probeer het opnieuw.' });
+  }
+});
+
+// Logout API
+app.get('/api/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Logout error:', err);
+    }
+    res.redirect('/login');
+  });
+});
+
+// Get setup progress
+app.get('/api/setup/progress', requireAuthAPI, (req, res) => {
+  try {
+    const progress = queries.findSetupProgress.get(req.session.userId);
+
+    if (!progress) {
+      return res.json({ progress: null });
+    }
+
+    res.json({ progress });
+  } catch (error) {
+    console.error('Error fetching setup progress:', error);
+    res.status(500).json({ error: 'Er is een fout opgetreden' });
+  }
+});
+
+// Save setup progress
+app.post('/api/setup/progress', requireAuthAPI, (req, res) => {
+  try {
+    const { current_step, step1_data, step2_data, step3_data, step4_data } = req.body;
+
+    const existing = queries.findSetupProgress.get(req.session.userId);
+
+    if (existing) {
+      queries.updateSetupProgress.run(
+        current_step || existing.current_step,
+        step1_data || existing.step1_data,
+        step2_data || existing.step2_data,
+        step3_data || existing.step3_data,
+        step4_data || existing.step4_data,
+        req.session.userId
+      );
+    } else {
+      queries.createSetupProgress.run(req.session.userId, step1_data || '{}');
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving setup progress:', error);
+    res.status(500).json({ error: 'Er is een fout opgetreden' });
+  }
+});
+
+// Complete setup
+app.post('/api/setup/complete', requireAuthAPI, async (req, res) => {
+  try {
+    const {
+      business_name,
+      business_type,
+      address,
+      website,
+      owner_phone,
+      description,
+      opening_hours,
+      languages,
+      special_rules,
+      greeting_message,
+      backup_phone,
+      connection_method
+    } = req.body;
+
+    // Update business profile
+    queries.updateBusinessProfile.run(
+      business_name,
+      business_type,
+      address,
+      website || '',
+      owner_phone,
+      description,
+      opening_hours,
+      languages,
+      special_rules || '',
+      greeting_message || '',
+      backup_phone || owner_phone,
+      connection_method,
+      1, // is_setup_complete
+      req.session.userId
+    );
+
+    console.log(`[SETUP] Setup completed for customer ID: ${req.session.userId}`);
+
+    res.json({ success: true });
+
+  } catch (error) {
+    console.error('Error completing setup:', error);
+    res.status(500).json({ error: 'Er is een fout opgetreden' });
+  }
 });
 
 // API endpoint to setup business info
@@ -71,13 +392,17 @@ app.post('/api/setup', (req, res) => {
 
   // Generate a session ID for this business
   const sessionId = generateSessionId();
-  businessSessions.set(sessionId, businessInfo);
+  const sessionData = {
+    businessInfo: businessInfo,
+    createdAt: Date.now(),
+    sessionId: sessionId
+  };
 
-  // IMPORTANT: Set this as the active session immediately
-  // This ensures phone calls use the LATEST business data
-  activeSessionId = sessionId;
-  console.log(`New session created: ${sessionId} for business: ${businessInfo.businessName}`);
-  console.log(`Active session is now: ${activeSessionId}`);
+  businessSessions.set(sessionId, sessionData);
+
+  console.log(`[SESSION CREATED] ID: ${sessionId}`);
+  console.log(`[SESSION CREATED] Business: ${businessInfo.businessName} (${businessInfo.businessType})`);
+  console.log(`[SESSION CREATED] Active sessions: ${businessSessions.size}`);
 
   // Return success with session ID
   res.json({ success: true, sessionId: sessionId });
@@ -96,9 +421,6 @@ app.get('/api/phone-number', (req, res) => {
       error: 'Twilio is not configured. Please add your Twilio credentials to the .env file to enable phone calls.'
     });
   }
-
-  // Set this as the active session for incoming calls
-  activeSessionId = sessionId;
 
   res.json({
     phoneNumber: process.env.TWILIO_PHONE_NUMBER,
@@ -180,13 +502,20 @@ app.post('/api/chat', async (req, res) => {
 app.post('/api/voice/incoming', (req, res) => {
   const callSid = req.body.CallSid;
   const from = req.body.From;
+  const to = req.body.To; // Which Twilio number was called
+  const callStartTime = Date.now();
 
-  console.log(`Incoming call from ${from}, CallSid: ${callSid}, Active SessionId: ${activeSessionId}`);
+  console.log(`\n========== INCOMING CALL ==========`);
+  console.log(`[CALL START] CallSid: ${callSid}`);
+  console.log(`[CALL START] From: ${from}`);
+  console.log(`[CALL START] To: ${to}`);
+  console.log(`[CALL START] Time: ${new Date().toISOString()}`);
 
   const twiml = new VoiceResponse();
 
   // Check if this phone number has already used their trial (only if restrictions are enabled)
   if (ENABLE_TRIAL_RESTRICTIONS && trialPhoneNumbers.has(from)) {
+    console.log(`[CALL REJECTED] Trial already used by ${from}`);
     twiml.say({
       voice: 'Polly.Joanna'
     }, 'Thank you for calling. You have already used your free trial. Visit youraisolution.nl to get this service for your business. Goodbye!');
@@ -194,8 +523,19 @@ app.post('/api/voice/incoming', (req, res) => {
     return res.type('text/xml').send(twiml.toString());
   }
 
-  // Get business info from active session
-  if (!activeSessionId) {
+  // Look up session: First check if this Twilio number has a mapped session
+  let sessionId = twilioNumberToSession.get(to);
+
+  // If no mapped session, get the most recent active session
+  if (!sessionId) {
+    sessionId = getActiveSession();
+    console.log(`[SESSION LOOKUP] No mapping for ${to}, using most recent session: ${sessionId}`);
+  } else {
+    console.log(`[SESSION LOOKUP] Found mapped session for ${to}: ${sessionId}`);
+  }
+
+  if (!sessionId) {
+    console.log(`[CALL REJECTED] No active sessions found`);
     twiml.say({
       voice: 'Polly.Joanna'
     }, 'Welcome to Your AI Solution. Please set up your trial on our website at youraisolution.nl first, then call this number. Goodbye!');
@@ -203,10 +543,10 @@ app.post('/api/voice/incoming', (req, res) => {
     return res.type('text/xml').send(twiml.toString());
   }
 
-  const businessInfo = businessSessions.get(activeSessionId);
+  const sessionData = businessSessions.get(sessionId);
 
-  if (!businessInfo) {
-    console.log(`ERROR: No business info found for session ${activeSessionId}`);
+  if (!sessionData || !sessionData.businessInfo) {
+    console.log(`[CALL ERROR] No business info found for session ${sessionId}`);
     twiml.say({
       voice: 'Polly.Joanna'
     }, 'Sorry, we could not find your business information. Please try again from the website. Goodbye!');
@@ -214,21 +554,27 @@ app.post('/api/voice/incoming', (req, res) => {
     return res.type('text/xml').send(twiml.toString());
   }
 
-  // Log which business we're using for this call
-  console.log(`Using business: ${businessInfo.businessName} (${businessInfo.businessType})`);
-  console.log(`Session ID: ${activeSessionId}`);
+  const businessInfo = sessionData.businessInfo;
+
+  // Log which business is handling this call
+  console.log(`[CALL CONNECTED] Business: ${businessInfo.businessName}`);
+  console.log(`[CALL CONNECTED] Type: ${businessInfo.businessType}`);
+  console.log(`[CALL CONNECTED] Session: ${sessionId}`);
+  console.log(`[CALL CONNECTED] Concurrent calls: ${callSessions.size + 1}`);
 
   // Mark this number as having used the trial (only if restrictions are enabled)
   if (ENABLE_TRIAL_RESTRICTIONS) {
     trialPhoneNumbers.add(from);
   }
 
-  // Create call session
+  // Create call session (each call is independent)
   callSessions.set(callSid, {
     businessInfo: businessInfo,
+    businessName: businessInfo.businessName,
     conversationHistory: [],
-    startTime: Date.now(),
-    from: from
+    startTime: callStartTime,
+    from: from,
+    sessionId: sessionId
   });
 
   // Greet and gather speech
@@ -253,14 +599,22 @@ app.post('/api/voice/process', async (req, res) => {
   const callSid = req.body.CallSid;
   const speechResult = req.body.SpeechResult;
 
-  console.log(`Processing speech for CallSid: ${callSid}, Speech: ${speechResult}`);
+  console.log(`[SPEECH INPUT] CallSid: ${callSid}`);
+  console.log(`[SPEECH INPUT] Text: "${speechResult}"`);
 
   const twiml = new VoiceResponse();
 
   // Get call session
   const session = callSessions.get(callSid);
 
+  if (session) {
+    console.log(`[SPEECH INPUT] Business: ${session.businessName}`);
+  }
+
   if (!session) {
+    console.log(`[CALL END] CallSid: ${callSid}`);
+    console.log(`[CALL END] Reason: Session expired or not found`);
+
     twiml.say({
       voice: 'Polly.Joanna'
     }, 'Sorry, your session has expired. Please call again. Goodbye!');
@@ -271,6 +625,13 @@ app.post('/api/voice/process', async (req, res) => {
   // Check if 3 minutes have elapsed
   const elapsed = (Date.now() - session.startTime) / 1000 / 60; // minutes
   if (elapsed >= 3) {
+    const callDuration = ((Date.now() - session.startTime) / 1000).toFixed(1); // seconds
+    console.log(`[CALL END] CallSid: ${callSid}`);
+    console.log(`[CALL END] Business: ${session.businessName}`);
+    console.log(`[CALL END] Duration: ${callDuration}s`);
+    console.log(`[CALL END] Reason: Trial time limit reached`);
+    console.log(`[CALL END] Active calls remaining: ${callSessions.size - 1}`);
+
     twiml.say({
       voice: 'Polly.Joanna'
     }, 'Thanks for trying Your AI Solution! Visit youraisolution.nl to get this for your business. Goodbye!');
@@ -294,6 +655,9 @@ app.post('/api/voice/process', async (req, res) => {
   }
 
   try {
+    console.log(`[CLAUDE API] Calling API for ${session.businessName}...`);
+    const apiStartTime = Date.now();
+
     // Build system prompt
     const systemPrompt = buildSystemPromptForVoice(session.businessInfo);
 
@@ -306,13 +670,22 @@ app.post('/api/voice/process', async (req, res) => {
       }
     ];
 
-    // Call Claude API
-    const response = await anthropic.messages.create({
+    // Call Claude API with timeout
+    const apiTimeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('API timeout')), 10000) // 10 second timeout
+    );
+
+    const apiCall = anthropic.messages.create({
       model: 'claude-haiku-4-5',
       max_tokens: 300,
       system: systemPrompt,
       messages: messages
     });
+
+    const response = await Promise.race([apiCall, apiTimeout]);
+
+    const apiDuration = Date.now() - apiStartTime;
+    console.log(`[CLAUDE API] Response received in ${apiDuration}ms`);
 
     const reply = response.content[0].text;
 
@@ -339,6 +712,13 @@ app.post('/api/voice/process', async (req, res) => {
     // Check time again before gathering more input
     const newElapsed = (Date.now() - session.startTime) / 1000 / 60;
     if (newElapsed >= 3) {
+      const callDuration = ((Date.now() - session.startTime) / 1000).toFixed(1); // seconds
+      console.log(`[CALL END] CallSid: ${callSid}`);
+      console.log(`[CALL END] Business: ${session.businessName}`);
+      console.log(`[CALL END] Duration: ${callDuration}s`);
+      console.log(`[CALL END] Reason: Trial time limit reached (after response)`);
+      console.log(`[CALL END] Active calls remaining: ${callSessions.size - 1}`);
+
       twiml.say({
         voice: 'Polly.Joanna'
       }, 'Thanks for trying Your AI Solution! Visit youraisolution.nl to get this for your business. Goodbye!');
@@ -358,12 +738,48 @@ app.post('/api/voice/process', async (req, res) => {
     res.type('text/xml').send(twiml.toString());
 
   } catch (error) {
-    console.error('Error processing speech:', error);
-    twiml.say({
-      voice: 'Polly.Joanna'
-    }, 'Sorry, I encountered an error. Please try again later. Goodbye!');
-    twiml.hangup();
-    callSessions.delete(callSid);
+    const apiDuration = Date.now() - apiStartTime;
+
+    // Distinguish between timeout and API errors
+    if (error.message === 'API timeout') {
+      console.error(`[CLAUDE API] Timeout after ${apiDuration}ms for ${session.businessName}`);
+      console.error(`[CLAUDE API] CallSid: ${callSid}`);
+
+      // Play friendly delay message instead of hanging up
+      twiml.say({
+        voice: 'Polly.Joanna'
+      }, 'We\'re experiencing a brief delay. One moment please.');
+
+      // Give them another chance to continue the conversation
+      twiml.gather({
+        input: 'speech',
+        action: '/api/voice/process',
+        method: 'POST',
+        speechTimeout: 'auto',
+        speechModel: 'phone_call'
+      });
+
+    } else {
+      // API error (not timeout)
+      console.error(`[CLAUDE API] Error for ${session.businessName}:`, error.message);
+      console.error(`[CLAUDE API] Status: ${error.status || 'unknown'}`);
+      console.error(`[CLAUDE API] CallSid: ${callSid}`);
+      console.error(`[CLAUDE API] Duration: ${apiDuration}ms`);
+
+      // For API errors, also try to continue gracefully
+      twiml.say({
+        voice: 'Polly.Joanna'
+      }, 'Sorry, I\'m having trouble processing that. Could you try asking again?');
+
+      twiml.gather({
+        input: 'speech',
+        action: '/api/voice/process',
+        method: 'POST',
+        speechTimeout: 'auto',
+        speechModel: 'phone_call'
+      });
+    }
+
     res.type('text/xml').send(twiml.toString());
   }
 });

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuratie - Your AI Solution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-blue-600">Your AI Solution</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="user-email" class="text-gray-700"></span>
+                    <a href="/api/logout" class="text-gray-700 hover:text-blue-600">Uitloggen</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Bar -->
+    <div class="bg-white border-b">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium text-gray-700">Stap <span id="current-step">1</span> van 5</span>
+                <span class="text-sm text-gray-500" id="step-title">Bedrijfsgegevens</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Wizard Container -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+
+            <!-- Error/Success Messages -->
+            <div id="message-container" class="hidden mb-6"></div>
+
+            <!-- Step 1: Business Details -->
+            <div id="step-1" class="step-content">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Bedrijfsgegevens</h2>
+                <p class="text-gray-600 mb-6">Vertel ons over uw bedrijf</p>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Bedrijfsnaam <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="business_name" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Bedrijfstype <span class="text-red-500">*</span>
+                        </label>
+                        <select id="business_type" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Selecteer type...</option>
+                            <option value="restaurant">Restaurant</option>
+                            <option value="hair_salon">Kapsalon</option>
+                            <option value="barber">Barbier</option>
+                            <option value="dental_clinic">Tandartskliniek</option>
+                            <option value="physiotherapy">Fysiotherapie</option>
+                            <option value="auto_repair">Autogarage</option>
+                            <option value="beauty_salon">Schoonheidssalon</option>
+                            <option value="retail_shop">Winkel</option>
+                            <option value="other">Overig</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Adres <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="address" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Straat 123, 1234 AB Amsterdam">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Website (optioneel)
+                        </label>
+                        <input type="url" id="website"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="https://uwbedrijf.nl">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Telefoonnummer eigenaar <span class="text-red-500">*</span>
+                        </label>
+                        <input type="tel" id="owner_phone" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="+31612345678">
+                        <p class="mt-1 text-sm text-gray-500">Voor doorschakelen en notificaties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Services and Information -->
+            <div id="step-2" class="step-content hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Diensten en Informatie</h2>
+                <p class="text-gray-600 mb-6">Wat moet uw AI receptionist weten?</p>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Beschrijving diensten en prijzen <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="description" required rows="8"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="Beschrijf uw diensten, menu, prijzen, veelgestelde vragen en andere belangrijke informatie..."></textarea>
+                        <div class="mt-2">
+                            <button onclick="fillExample()" type="button"
+                                    class="text-sm text-blue-600 hover:underline">
+                                Vul voorbeeldtekst in
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                            Openingstijden <span class="text-red-500">*</span>
+                        </label>
+                        <div class="space-y-2">
+                            <div class="grid grid-cols-4 gap-2 items-center">
+                                <div class="font-medium text-sm">Dag</div>
+                                <div class="text-sm text-center">Open</div>
+                                <div class="text-sm">Vanaf</div>
+                                <div class="text-sm">Tot</div>
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-2 items-center" data-day="monday">
+                                <label class="text-sm">Maandag</label>
+                                <input type="checkbox" class="day-open justify-self-center" checked>
+                                <input type="time" class="open-time px-2 py-1 border rounded" value="09:00">
+                                <input type="time" class="close-time px-2 py-1 border rounded" value="17:00">
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-2 items-center" data-day="tuesday">
+                                <label class="text-sm">Dinsdag</label>
+                                <input type="checkbox" class="day-open justify-self-center" checked>
+                                <input type="time" class="open-time px-2 py-1 border rounded" value="09:00">
+                                <input type="time" class="close-time px-2 py-1 border rounded" value="17:00">
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-2 items-center" data-day="wednesday">
+                                <label class="text-sm">Woensdag</label>
+                                <input type="checkbox" class="day-open justify-self-center" checked>
+                                <input type="time" class="open-time px-2 py-1 border rounded" value="09:00">
+                                <input type="time" class="close-time px-2 py-1 border rounded" value="17:00">
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-2 items-center" data-day="thursday">
+                                <label class="text-sm">Donderdag</label>
+                                <input type="checkbox" class="day-open justify-self-center" checked>
+                                <input type="time" class="open-time px-2 py-1 border rounded" value="09:00">
+                                <input type="time" class="close-time px-2 py-1 border rounded" value="17:00">
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-2 items-center" data-day="friday">
+                                <label class="text-sm">Vrijdag</label>
+                                <input type="checkbox" class="day-open justify-self-center" checked>
+                                <input type="time" class="open-time px-2 py-1 border rounded" value="09:00">
+                                <input type="time" class="close-time px-2 py-1 border rounded" value="17:00">
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-2 items-center" data-day="saturday">
+                                <label class="text-sm">Zaterdag</label>
+                                <input type="checkbox" class="day-open justify-self-center">
+                                <input type="time" class="open-time px-2 py-1 border rounded" value="10:00" disabled>
+                                <input type="time" class="close-time px-2 py-1 border rounded" value="14:00" disabled>
+                            </div>
+
+                            <div class="grid grid-cols-4 gap-2 items-center" data-day="sunday">
+                                <label class="text-sm">Zondag</label>
+                                <input type="checkbox" class="day-open justify-self-center">
+                                <input type="time" class="open-time px-2 py-1 border rounded" value="10:00" disabled>
+                                <input type="time" class="close-time px-2 py-1 border rounded" value="14:00" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Talen <span class="text-red-500">*</span>
+                        </label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="languages" value="dutch" checked class="language-checkbox mr-2">
+                                <span>Nederlands</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="languages" value="english" checked class="language-checkbox mr-2">
+                                <span>Engels</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Special Rules -->
+            <div id="step-3" class="step-content hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Speciale Regels</h2>
+                <p class="text-gray-600 mb-6">Zijn er specifieke richtlijnen die uw AI moet volgen?</p>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Speciale regels en uitzonderingen (optioneel)
+                        </label>
+                        <textarea id="special_rules" rows="6"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="Bijvoorbeeld: 'Geen leveringen na 21:30' of 'Tom doet alleen kleurbehandelingen'"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Begroeting (optioneel)
+                        </label>
+                        <input type="text" id="greeting_message"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Laat leeg voor standaard begroeting">
+                        <p class="mt-1 text-sm text-gray-500">Als leeg, gebruikt de AI een standaard begroeting</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Backup telefoonnummer (optioneel)
+                        </label>
+                        <input type="tel" id="backup_phone"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="+31612345678">
+                        <p class="mt-1 text-sm text-gray-500">Voor het doorschakelen van gesprekken (kan hetzelfde zijn als eigenaar nummer)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Connection Method -->
+            <div id="step-4" class="step-content hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Verbindingsmethode</h2>
+                <p class="text-gray-600 mb-6">Hoe wilt u uw AI receptionist bereikbaar maken?</p>
+
+                <div class="space-y-6">
+                    <!-- Option A: Forward Existing -->
+                    <div class="border-2 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition"
+                         onclick="selectConnectionMethod('forward_existing')" id="option-forward">
+                        <div class="flex items-start">
+                            <input type="radio" name="connection_method" value="forward_existing" id="radio-forward" checked
+                                   class="mt-1 mr-3">
+                            <div class="flex-1">
+                                <label for="radio-forward" class="font-semibold text-lg cursor-pointer">
+                                    Doorschakelen van bestaand nummer (aanbevolen)
+                                </label>
+                                <p class="text-gray-600 mt-2">
+                                    Behoud uw huidige bedrijfsnummer. Stel gewoon doorschakeling in naar ons AI-nummer.
+                                </p>
+
+                                <div id="forward-instructions" class="mt-4 bg-blue-50 p-4 rounded-lg">
+                                    <p class="font-medium mb-2">Schakel uw nummer door naar:</p>
+                                    <p class="text-lg font-mono bg-white px-3 py-2 rounded border" id="twilio-number-display">
+                                        Wordt geladen...
+                                    </p>
+
+                                    <div class="mt-4">
+                                        <p class="font-medium mb-2">Doorschakeling instellen:</p>
+                                        <ul class="text-sm space-y-1">
+                                            <li><strong>KPN:</strong> Bel *21*<span class="twilio-number-text"></span>#</li>
+                                            <li><strong>VodafoneZiggo:</strong> Bel *21*<span class="twilio-number-text"></span>#</li>
+                                            <li><strong>T-Mobile:</strong> Bel *21*<span class="twilio-number-text"></span>#</li>
+                                            <li><strong>Andere provider:</strong> Vraag uw provider om gesprekken door te schakelen naar <span class="twilio-number-text"></span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option B: New Number -->
+                    <div class="border-2 rounded-lg p-6 cursor-pointer hover:border-blue-500 transition"
+                         onclick="selectConnectionMethod('new_number')" id="option-new">
+                        <div class="flex items-start">
+                            <input type="radio" name="connection_method" value="new_number" id="radio-new"
+                                   class="mt-1 mr-3">
+                            <div class="flex-1">
+                                <label for="radio-new" class="font-semibold text-lg cursor-pointer">
+                                    Nieuw nummer aanvragen
+                                </label>
+                                <p class="text-gray-600 mt-2">
+                                    Wij wijzen u een Nederlands telefoonnummer toe dat u op uw website en visitekaartjes kunt plaatsen.
+                                </p>
+
+                                <div id="new-number-info" class="mt-4 bg-blue-50 p-4 rounded-lg hidden">
+                                    <p class="text-gray-700">
+                                        Ons team wijst binnen 24 uur een telefoonnummer aan u toe. U ontvangt een e-mail zodra uw nummer klaar is.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Review and Activate -->
+            <div id="step-5" class="step-content hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Controleer en Activeer</h2>
+                <p class="text-gray-600 mb-6">Controleer uw gegevens voordat u activeert</p>
+
+                <div class="space-y-6" id="review-content">
+                    <!-- Review content will be populated by JavaScript -->
+                </div>
+
+                <div class="mt-8 bg-blue-50 p-6 rounded-lg">
+                    <h3 class="font-semibold text-lg mb-2">Klaar om te beginnen?</h3>
+                    <p class="text-gray-700">
+                        Nadat u uw AI receptionist activeert, kunt u direct beginnen met het ontvangen van gesprekken en chats.
+                        U kunt alle instellingen later aanpassen via uw dashboard.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-8 pt-6 border-t">
+                <button id="back-btn" onclick="previousStep()"
+                        class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition hidden">
+                    Vorige
+                </button>
+                <div class="flex-1"></div>
+                <button id="next-btn" onclick="nextStep()"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    Volgende
+                </button>
+                <button id="activate-btn" onclick="activateAI()"
+                        class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-lg font-semibold hidden">
+                    Activeer Mijn AI Receptionist
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        let formData = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProgress();
+            await loadTwilioNumber();
+
+            // Setup opening hours checkboxes
+            document.querySelectorAll('.day-open').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const row = this.closest('[data-day]');
+                    const openTime = row.querySelector('.open-time');
+                    const closeTime = row.querySelector('.close-time');
+                    openTime.disabled = !this.checked;
+                    closeTime.disabled = !this.checked;
+                });
+            });
+        });
+
+        async function loadProgress() {
+            try {
+                const response = await fetch('/api/setup/progress');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.progress) {
+                        // Populate fields with saved data
+                        if (data.progress.step1_data) {
+                            const step1 = JSON.parse(data.progress.step1_data);
+                            Object.keys(step1).forEach(key => {
+                                const field = document.getElementById(key);
+                                if (field) field.value = step1[key] || '';
+                            });
+                        }
+                        currentStep = data.progress.current_step || 1;
+                        showStep(currentStep);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading progress:', error);
+            }
+        }
+
+        async function loadTwilioNumber() {
+            try {
+                const response = await fetch('/api/phone-number');
+                if (response.ok) {
+                    const data = await response.json();
+                    const number = data.phoneNumber || 'Niet beschikbaar';
+                    document.getElementById('twilio-number-display').textContent = number;
+                    document.querySelectorAll('.twilio-number-text').forEach(el => {
+                        el.textContent = number;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading phone number:', error);
+            }
+        }
+
+        function selectConnectionMethod(method) {
+            document.getElementById('radio-forward').checked = (method === 'forward_existing');
+            document.getElementById('radio-new').checked = (method === 'new_number');
+
+            const optionForward = document.getElementById('option-forward');
+            const optionNew = document.getElementById('option-new');
+            const forwardInstructions = document.getElementById('forward-instructions');
+            const newNumberInfo = document.getElementById('new-number-info');
+
+            if (method === 'forward_existing') {
+                optionForward.classList.add('border-blue-500');
+                optionNew.classList.remove('border-blue-500');
+                forwardInstructions.classList.remove('hidden');
+                newNumberInfo.classList.add('hidden');
+            } else {
+                optionNew.classList.add('border-blue-500');
+                optionForward.classList.remove('border-blue-500');
+                newNumberInfo.classList.remove('hidden');
+                forwardInstructions.classList.add('hidden');
+            }
+        }
+
+        function fillExample() {
+            document.getElementById('description').value = `MENU & PRIJZEN:
+- Margherita pizza: €8,50
+- Pepperoni pizza: €10,50
+- Vegetarische pizza: €9,50
+- Pasta carbonara: €11,00
+- Pasta bolognese: €10,00
+- Cola, Fanta, Sprite: €2,50
+
+BEZORGING:
+- Bezorging gratis vanaf €15
+- Bezorgtijd: 30-45 minuten
+- Bezorggebied: binnen 5km
+
+VEELGESTELDE VRAGEN:
+- Glutenvrije opties beschikbaar
+- Reserveren mogelijk voor groepen vanaf 6 personen
+- Afhalen krijgt 10% korting`;
+        }
+
+        function getOpeningHours() {
+            const hours = {};
+            document.querySelectorAll('[data-day]').forEach(row => {
+                const day = row.dataset.day;
+                const isOpen = row.querySelector('.day-open').checked;
+                const openTime = row.querySelector('.open-time').value;
+                const closeTime = row.querySelector('.close-time').value;
+
+                hours[day] = {
+                    open: isOpen,
+                    openTime: isOpen ? openTime : null,
+                    closeTime: isOpen ? closeTime : null
+                };
+            });
+            return hours;
+        }
+
+        function getLanguages() {
+            const languages = [];
+            document.querySelectorAll('.language-checkbox:checked').forEach(checkbox => {
+                languages.push(checkbox.value);
+            });
+            return languages;
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                const required = ['business_name', 'business_type', 'address', 'owner_phone'];
+                for (const field of required) {
+                    const value = document.getElementById(field).value.trim();
+                    if (!value) {
+                        showMessage(`Vul alle verplichte velden in`, 'error');
+                        return false;
+                    }
+                }
+            } else if (step === 2) {
+                const description = document.getElementById('description').value.trim();
+                if (!description) {
+                    showMessage('Vul een beschrijving van uw diensten in', 'error');
+                    return false;
+                }
+                const languages = getLanguages();
+                if (languages.length === 0) {
+                    showMessage('Selecteer minimaal één taal', 'error');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        async function nextStep() {
+            if (!validateStep(currentStep)) {
+                return;
+            }
+
+            // Save current step data
+            await saveProgress();
+
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`step-${i}`).classList.add('hidden');
+            }
+
+            // Show current step
+            document.getElementById(`step-${step}`).classList.remove('hidden');
+
+            // Update progress bar
+            const progress = (step / totalSteps) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('current-step').textContent = step;
+
+            // Update step title
+            const titles = [
+                'Bedrijfsgegevens',
+                'Diensten en Informatie',
+                'Speciale Regels',
+                'Verbindingsmethode',
+                'Controleer en Activeer'
+            ];
+            document.getElementById('step-title').textContent = titles[step - 1];
+
+            // Show/hide buttons
+            const backBtn = document.getElementById('back-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const activateBtn = document.getElementById('activate-btn');
+
+            if (step === 1) {
+                backBtn.classList.add('hidden');
+            } else {
+                backBtn.classList.remove('hidden');
+            }
+
+            if (step === totalSteps) {
+                nextBtn.classList.add('hidden');
+                activateBtn.classList.remove('hidden');
+                populateReview();
+            } else {
+                nextBtn.classList.remove('hidden');
+                activateBtn.classList.add('hidden');
+            }
+        }
+
+        function populateReview() {
+            const hours = getOpeningHours();
+            const languages = getLanguages();
+            const connectionMethod = document.querySelector('input[name="connection_method"]:checked').value;
+
+            const hoursText = Object.entries(hours)
+                .filter(([day, data]) => data.open)
+                .map(([day, data]) => `${day}: ${data.openTime} - ${data.closeTime}`)
+                .join(', ');
+
+            const reviewHTML = `
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-semibold text-lg">Bedrijfsgegevens</h3>
+                        <button onclick="currentStep=1; showStep(1)" class="text-blue-600 hover:underline text-sm">Bewerken</button>
+                    </div>
+                    <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                        <dt class="text-gray-600">Bedrijfsnaam:</dt>
+                        <dd class="font-medium">${document.getElementById('business_name').value}</dd>
+                        <dt class="text-gray-600">Type:</dt>
+                        <dd class="font-medium">${document.getElementById('business_type').value}</dd>
+                        <dt class="text-gray-600">Adres:</dt>
+                        <dd class="font-medium">${document.getElementById('address').value}</dd>
+                        <dt class="text-gray-600">Telefoon:</dt>
+                        <dd class="font-medium">${document.getElementById('owner_phone').value}</dd>
+                    </dl>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-semibold text-lg">Diensten</h3>
+                        <button onclick="currentStep=2; showStep(2)" class="text-blue-600 hover:underline text-sm">Bewerken</button>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2"><strong>Talen:</strong> ${languages.join(', ')}</p>
+                    <p class="text-sm text-gray-700"><strong>Openingstijden:</strong> ${hoursText || 'Geen opgegeven'}</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-semibold text-lg">Verbinding</h3>
+                        <button onclick="currentStep=4; showStep(4)" class="text-blue-600 hover:underline text-sm">Bewerken</button>
+                    </div>
+                    <p class="text-sm">${connectionMethod === 'forward_existing' ? 'Doorschakeling van bestaand nummer' : 'Nieuw nummer aangevraagd'}</p>
+                </div>
+            `;
+
+            document.getElementById('review-content').innerHTML = reviewHTML;
+        }
+
+        async function saveProgress() {
+            const step1Data = {
+                business_name: document.getElementById('business_name').value,
+                business_type: document.getElementById('business_type').value,
+                address: document.getElementById('address').value,
+                website: document.getElementById('website').value,
+                owner_phone: document.getElementById('owner_phone').value
+            };
+
+            const step2Data = {
+                description: document.getElementById('description').value,
+                opening_hours: getOpeningHours(),
+                languages: getLanguages()
+            };
+
+            const step3Data = {
+                special_rules: document.getElementById('special_rules').value,
+                greeting_message: document.getElementById('greeting_message').value,
+                backup_phone: document.getElementById('backup_phone').value
+            };
+
+            const step4Data = {
+                connection_method: document.querySelector('input[name="connection_method"]:checked').value
+            };
+
+            try {
+                await fetch('/api/setup/progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        current_step: currentStep,
+                        step1_data: JSON.stringify(step1Data),
+                        step2_data: JSON.stringify(step2Data),
+                        step3_data: JSON.stringify(step3Data),
+                        step4_data: JSON.stringify(step4Data)
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving progress:', error);
+            }
+        }
+
+        async function activateAI() {
+            const activateBtn = document.getElementById('activate-btn');
+            activateBtn.disabled = true;
+            activateBtn.textContent = 'Bezig met activeren...';
+
+            try {
+                const allData = {
+                    business_name: document.getElementById('business_name').value,
+                    business_type: document.getElementById('business_type').value,
+                    address: document.getElementById('address').value,
+                    website: document.getElementById('website').value,
+                    owner_phone: document.getElementById('owner_phone').value,
+                    description: document.getElementById('description').value,
+                    opening_hours: JSON.stringify(getOpeningHours()),
+                    languages: JSON.stringify(getLanguages()),
+                    special_rules: document.getElementById('special_rules').value,
+                    greeting_message: document.getElementById('greeting_message').value,
+                    backup_phone: document.getElementById('backup_phone').value,
+                    connection_method: document.querySelector('input[name="connection_method"]:checked').value
+                };
+
+                const response = await fetch('/api/setup/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(allData)
+                });
+
+                if (response.ok) {
+                    showMessage('Uw AI receptionist is geactiveerd! U wordt doorgestuurd...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 2000);
+                } else {
+                    const data = await response.json();
+                    showMessage(data.error || 'Er is een fout opgetreden', 'error');
+                    activateBtn.disabled = false;
+                    activateBtn.textContent = 'Activeer Mijn AI Receptionist';
+                }
+            } catch (error) {
+                console.error('Activation error:', error);
+                showMessage('Er is een fout opgetreden. Probeer het opnieuw.', 'error');
+                activateBtn.disabled = false;
+                activateBtn.textContent = 'Activeer Mijn AI Receptionist';
+            }
+        }
+
+        function showMessage(message, type) {
+            const container = document.getElementById('message-container');
+            const bgColor = type === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700';
+
+            container.innerHTML = `
+                <div class="${bgColor} px-4 py-3 rounded border">
+                    <p>${message}</p>
+                </div>
+            `;
+            container.classList.remove('hidden');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

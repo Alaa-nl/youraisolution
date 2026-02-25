@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijzen - Your AI Solution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-blue-600">Your AI Solution</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+                    <a href="/pricing" class="text-blue-600 font-medium">Prijzen</a>
+                    <a href="/login" class="text-gray-700 hover:text-blue-600">Inloggen</a>
+                    <a href="/signup" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Start gratis</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Eenvoudige, transparante prijzen</h1>
+            <p class="text-xl text-blue-100 mb-8">Begin met een gratis proefperiode van 7 dagen. Geen creditcard vereist.</p>
+
+            <!-- Billing Toggle -->
+            <div class="flex items-center justify-center space-x-4 mt-8">
+                <span class="text-blue-100" id="monthly-label">Maandelijks</span>
+                <button onclick="toggleBilling()" class="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-500 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+                    <span id="toggle-circle" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+                </button>
+                <span class="text-blue-100" id="yearly-label">Jaarlijks <span class="text-green-300 font-semibold">(2 maanden gratis!)</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <!-- Starter Plan -->
+            <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-gray-200 hover:border-blue-400 transition">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
+                <div class="mb-6">
+                    <span class="text-4xl font-bold text-gray-900">€<span id="starter-price">69</span></span>
+                    <span class="text-gray-600">/maand</span>
+                </div>
+
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">AI webchat widget voor uw website</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Tot 300 gesprekken per maand</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Dagelijkse email samenvatting</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Email ondersteuning</span>
+                    </li>
+                </ul>
+
+                <a href="/signup?plan=starter" class="block w-full text-center bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Start gratis proefperiode
+                </a>
+            </div>
+
+            <!-- Professional Plan (Most Popular) -->
+            <div class="bg-white rounded-lg shadow-xl p-8 border-4 border-blue-600 relative transform md:scale-105">
+                <div class="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg text-sm font-semibold">
+                    Meest Populair
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Professional</h3>
+                <div class="mb-6">
+                    <span class="text-4xl font-bold text-gray-900">€<span id="professional-price">129</span></span>
+                    <span class="text-gray-600">/maand</span>
+                </div>
+
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700 font-semibold">Alles van Starter</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">AI telefoon receptionist</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Afspraken inplannen</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Gesprek doorschakelen naar uw telefoon</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Real-time SMS notificaties</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Tot 1000 gesprekken per maand</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Prioriteit ondersteuning</span>
+                    </li>
+                </ul>
+
+                <a href="/signup?plan=professional" class="block w-full text-center bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Start gratis proefperiode
+                </a>
+            </div>
+
+            <!-- Business Plan -->
+            <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-gray-200 hover:border-blue-400 transition">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Business</h3>
+                <div class="mb-6">
+                    <span class="text-4xl font-bold text-gray-900">€<span id="business-price">199</span></span>
+                    <span class="text-gray-600">/maand</span>
+                </div>
+
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700 font-semibold">Alles van Professional</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">WhatsApp integratie <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Binnenkort</span></span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Meerdere telefoonnummers</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Aangepaste AI stem en persoonlijkheid</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Tot 3000 gesprekken per maand</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-6 w-6 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-gray-700">Persoonlijke accountmanager</span>
+                    </li>
+                </ul>
+
+                <a href="/signup?plan=business" class="block w-full text-center bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Start gratis proefperiode
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="bg-white py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Veelgestelde vragen</h2>
+
+            <div class="space-y-6">
+                <!-- FAQ 1 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Kan ik mijn bestaande telefoonnummer behouden?</h3>
+                    <p class="text-gray-700">Ja, absoluut! U stelt gewoon doorschakeling in van uw huidige nummer naar ons AI-nummer. Uw klanten bellen nog steeds uw bekende nummer.</p>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Hoe werkt de gratis proefperiode?</h3>
+                    <p class="text-gray-700">U krijgt 7 dagen gratis toegang tot alle functies van uw gekozen pakket. Geen creditcard nodig bij aanmelding. Na de proefperiode kunt u kiezen of u wilt doorgaan.</p>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Kan ik later van pakket wisselen?</h3>
+                    <p class="text-gray-700">Ja, u kunt op elk moment upgraden of downgraden. Bij een upgrade krijgt u direct toegang tot de extra functies. Bij een downgrade gaat de wijziging in aan het einde van uw huidige factuurperiode.</p>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Wat gebeurt er als ik mijn gespreksenlimiet overschrijd?</h3>
+                    <p class="text-gray-700">We sturen u een melding wanneer u 80% van uw limiet bereikt. Als u de limiet overschrijdt, kunt u upgraden of gesprekken gaan verder tegen €0,15 per stuk. De service blijft gewoon werken.</p>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Zit ik vast aan een contract?</h3>
+                    <p class="text-gray-700">Nee, er is geen contract. U kunt op elk moment opzeggen zonder extra kosten. Bij maandelijkse betaling stopt de service aan het einde van uw betaalde periode.</p>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Welke talen spreekt de AI?</h3>
+                    <p class="text-gray-700">Op dit moment Nederlands en Engels. De AI herkent automatisch de taal van de klant en antwoordt in dezelfde taal. Meer talen komen binnenkort beschikbaar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-blue-600 py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">Klaar om te beginnen?</h2>
+            <p class="text-xl text-blue-100 mb-8">Start vandaag nog met uw gratis proefperiode van 7 dagen</p>
+            <a href="/signup" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                Probeer gratis
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 Your AI Solution. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+    <script>
+        let isYearly = false;
+
+        const prices = {
+            monthly: {
+                starter: 69,
+                professional: 129,
+                business: 199
+            },
+            yearly: {
+                starter: Math.round((69 * 10) / 12),  // 10 months for price of 12
+                professional: Math.round((129 * 10) / 12),
+                business: Math.round((199 * 10) / 12)
+            }
+        };
+
+        function toggleBilling() {
+            isYearly = !isYearly;
+
+            const toggle = document.getElementById('toggle-circle');
+            const monthlyLabel = document.getElementById('monthly-label');
+            const yearlyLabel = document.getElementById('yearly-label');
+
+            if (isYearly) {
+                toggle.classList.remove('translate-x-1');
+                toggle.classList.add('translate-x-6');
+                monthlyLabel.classList.remove('text-white');
+                monthlyLabel.classList.add('text-blue-100');
+                yearlyLabel.classList.remove('text-blue-100');
+                yearlyLabel.classList.add('text-white');
+
+                document.getElementById('starter-price').textContent = prices.yearly.starter;
+                document.getElementById('professional-price').textContent = prices.yearly.professional;
+                document.getElementById('business-price').textContent = prices.yearly.business;
+            } else {
+                toggle.classList.remove('translate-x-6');
+                toggle.classList.add('translate-x-1');
+                monthlyLabel.classList.remove('text-blue-100');
+                monthlyLabel.classList.add('text-white');
+                yearlyLabel.classList.remove('text-white');
+                yearlyLabel.classList.add('text-blue-100');
+
+                document.getElementById('starter-price').textContent = prices.monthly.starter;
+                document.getElementById('professional-price').textContent = prices.monthly.professional;
+                document.getElementById('business-price').textContent = prices.monthly.business;
+            }
+        }
+    </script>
+</body>
+</html>

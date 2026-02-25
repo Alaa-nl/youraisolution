@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registreren - Your AI Solution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-blue-600">Your AI Solution</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-blue-600">Prijzen</a>
+                    <a href="/login" class="text-gray-700 hover:text-blue-600">Inloggen</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Signup Form -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900">Maak een account aan</h2>
+                    <p class="mt-2 text-gray-600">Start uw gratis proefperiode van 7 dagen</p>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <p id="error-text"></p>
+                </div>
+
+                <!-- Success Message -->
+                <div id="success-message" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    <p id="success-text"></p>
+                </div>
+
+                <form id="signup-form" class="space-y-6">
+                    <!-- Business Name -->
+                    <div>
+                        <label for="business_name" class="block text-sm font-medium text-gray-700 mb-1">
+                            Bedrijfsnaam <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="business_name" name="business_name" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Uw bedrijfsnaam">
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                            Email adres <span class="text-red-500">*</span>
+                        </label>
+                        <input type="email" id="email" name="email" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="uw@email.nl">
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                            Wachtwoord <span class="text-red-500">*</span>
+                        </label>
+                        <input type="password" id="password" name="password" required minlength="8"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Minimaal 8 karakters">
+                        <p class="mt-1 text-sm text-gray-500">Minimaal 8 karakters</p>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div>
+                        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">
+                            Bevestig wachtwoord <span class="text-red-500">*</span>
+                        </label>
+                        <input type="password" id="confirm_password" name="confirm_password" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Herhaal uw wachtwoord">
+                    </div>
+
+                    <!-- Plan Selection -->
+                    <div>
+                        <label for="plan" class="block text-sm font-medium text-gray-700 mb-1">
+                            Kies uw pakket <span class="text-red-500">*</span>
+                        </label>
+                        <select id="plan" name="plan" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="starter">Starter - €69/maand</option>
+                            <option value="professional" selected>Professional - €129/maand</option>
+                            <option value="business">Business - €199/maand</option>
+                        </select>
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="flex items-start">
+                        <input type="checkbox" id="terms" name="terms" required
+                               class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="terms" class="ml-2 text-sm text-gray-700">
+                            Ik ga akkoord met de <a href="#" class="text-blue-600 hover:underline">algemene voorwaarden</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submit-btn"
+                            class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Maak mijn account aan
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <p class="mt-6 text-center text-sm text-gray-600">
+                    Heeft u al een account?
+                    <a href="/login" class="text-blue-600 hover:underline font-medium">Inloggen</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if plan is specified in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const planParam = urlParams.get('plan');
+        if (planParam && ['starter', 'professional', 'business'].includes(planParam)) {
+            document.getElementById('plan').value = planParam;
+        }
+
+        // Form submission
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submit-btn');
+            const errorDiv = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const successDiv = document.getElementById('success-message');
+            const successText = document.getElementById('success-text');
+
+            // Hide previous messages
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            // Get form data
+            const formData = {
+                business_name: document.getElementById('business_name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                confirm_password: document.getElementById('confirm_password').value,
+                plan: document.getElementById('plan').value,
+                terms: document.getElementById('terms').checked
+            };
+
+            // Validation
+            if (!formData.business_name || !formData.email || !formData.password) {
+                errorText.textContent = 'Vul alle verplichte velden in';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (formData.password.length < 8) {
+                errorText.textContent = 'Wachtwoord moet minimaal 8 karakters bevatten';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (formData.password !== formData.confirm_password) {
+                errorText.textContent = 'Wachtwoorden komen niet overeen';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (!formData.terms) {
+                errorText.textContent = 'U moet akkoord gaan met de algemene voorwaarden';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Bezig met aanmelden...';
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successText.textContent = 'Account succesvol aangemaakt! U wordt doorgestuurd...';
+                    successDiv.classList.remove('hidden');
+
+                    // Redirect after 1 second
+                    setTimeout(() => {
+                        window.location.href = '/dashboard/setup';
+                    }, 1000);
+                } else {
+                    errorText.textContent = data.error || 'Er is een fout opgetreden. Probeer het opnieuw.';
+                    errorDiv.classList.remove('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Maak mijn account aan';
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                errorText.textContent = 'Er is een fout opgetreden. Controleer uw internetverbinding en probeer opnieuw.';
+                errorDiv.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Maak mijn account aan';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -46,3 +46,8 @@ coverage/
 # Build
 dist/
 build/
+
+# Database
+*.db
+*.db-shm
+*.db-wal
