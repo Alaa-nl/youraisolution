@@ -32,11 +32,17 @@ if (process.env.TWILIO_ACCOUNT_SID &&
   console.warn('Twilio credentials not configured. Voice calls will not work.');
 }
 
+// Configuration: Set to false for testing, true for production
+const ENABLE_TRIAL_RESTRICTIONS = process.env.ENABLE_TRIAL_RESTRICTIONS === 'true' || false;
+
 // In-memory storage for call sessions and trial tracking
 const callSessions = new Map(); // CallSid -> { businessInfo, conversationHistory, startTime }
 const trialPhoneNumbers = new Set(); // Phone numbers that have used their free trial
 const businessSessions = new Map(); // SessionId -> businessInfo (for linking form to call)
 let activeSessionId = null; // The session ID for the next incoming call
+
+console.log(`Trial restrictions: ${ENABLE_TRIAL_RESTRICTIONS ? 'ENABLED' : 'DISABLED (Testing Mode)'}`);
+
 
 // Middleware
 app.use(express.json());
@@ -173,8 +179,8 @@ app.post('/api/voice/incoming', (req, res) => {
 
   const twiml = new VoiceResponse();
 
-  // Check if this phone number has already used their trial
-  if (trialPhoneNumbers.has(from)) {
+  // Check if this phone number has already used their trial (only if restrictions are enabled)
+  if (ENABLE_TRIAL_RESTRICTIONS && trialPhoneNumbers.has(from)) {
     twiml.say({
       voice: 'Polly.Joanna'
     }, 'Thank you for calling. You have already used your free trial. Visit youraisolution.nl to get this service for your business. Goodbye!');
@@ -201,8 +207,10 @@ app.post('/api/voice/incoming', (req, res) => {
     return res.type('text/xml').send(twiml.toString());
   }
 
-  // Mark this number as having used the trial
-  trialPhoneNumbers.add(from);
+  // Mark this number as having used the trial (only if restrictions are enabled)
+  if (ENABLE_TRIAL_RESTRICTIONS) {
+    trialPhoneNumbers.add(from);
+  }
 
   // Create call session
   callSessions.set(callSid, {
