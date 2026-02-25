@@ -73,6 +73,12 @@ app.post('/api/setup', (req, res) => {
   const sessionId = generateSessionId();
   businessSessions.set(sessionId, businessInfo);
 
+  // IMPORTANT: Set this as the active session immediately
+  // This ensures phone calls use the LATEST business data
+  activeSessionId = sessionId;
+  console.log(`New session created: ${sessionId} for business: ${businessInfo.businessName}`);
+  console.log(`Active session is now: ${activeSessionId}`);
+
   // Return success with session ID
   res.json({ success: true, sessionId: sessionId });
 });
@@ -200,12 +206,17 @@ app.post('/api/voice/incoming', (req, res) => {
   const businessInfo = businessSessions.get(activeSessionId);
 
   if (!businessInfo) {
+    console.log(`ERROR: No business info found for session ${activeSessionId}`);
     twiml.say({
       voice: 'Polly.Joanna'
     }, 'Sorry, we could not find your business information. Please try again from the website. Goodbye!');
     twiml.hangup();
     return res.type('text/xml').send(twiml.toString());
   }
+
+  // Log which business we're using for this call
+  console.log(`Using business: ${businessInfo.businessName} (${businessInfo.businessType})`);
+  console.log(`Session ID: ${activeSessionId}`);
 
   // Mark this number as having used the trial (only if restrictions are enabled)
   if (ENABLE_TRIAL_RESTRICTIONS) {
