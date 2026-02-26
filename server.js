@@ -548,6 +548,13 @@ app.post('/api/voice/incoming', (req, res) => {
   console.log(`[CALL START] To: ${to}`);
   console.log(`[CALL START] Time: ${new Date().toISOString()}`);
 
+  // Prevent duplicate processing - check if this call already has a session
+  if (callSessions.has(callSid)) {
+    console.log(`[CALL DUPLICATE] CallSid ${callSid} already being processed. Ignoring duplicate request.`);
+    const twiml = new VoiceResponse();
+    return res.type('text/xml').send(twiml.toString());
+  }
+
   const twiml = new VoiceResponse();
 
   // Check if this phone number has already used their trial (only if restrictions are enabled)
@@ -657,10 +664,18 @@ app.post('/api/voice/incoming', (req, res) => {
   };
   const welcomeGreeting = greetings[primaryLanguage] || greetings['en-US'];
 
+  // Determine the correct WebSocket host
+  // Use environment variable for production, fall back to request host
+  const wsHost = process.env.RENDER_EXTERNAL_HOSTNAME || process.env.WS_HOST || req.headers.host || 'youraisolution.onrender.com';
+  const wsUrl = `wss://${wsHost}/api/voice/websocket?CallSid=${callSid}`;
+
+  console.log(`[CALL SETUP] WebSocket host: ${wsHost}`);
+  console.log(`[CALL SETUP] WebSocket URL: ${wsUrl}`);
+
   // Create ConversationRelay with multi-language support
   const connect = twiml.connect();
   const conversationRelay = connect.conversationRelay({
-    url: `wss://${req.headers.host}/api/voice/websocket?CallSid=${callSid}`,
+    url: wsUrl,
     language: 'multi', // Start with multi-language detection enabled
     ttsProvider: 'Amazon',
     transcriptionProvider: 'Deepgram',
@@ -681,7 +696,16 @@ app.post('/api/voice/incoming', (req, res) => {
     });
   });
 
-  res.type('text/xml').send(twiml.toString());
+  const twimlXml = twiml.toString();
+  console.log(`\n========== TWIML RESPONSE ==========`);
+  console.log(`[TWIML] CallSid: ${callSid}`);
+  console.log(`[TWIML] WebSocket URL: ${wsUrl}`);
+  console.log(`[TWIML] Primary Language: ${primaryLanguage}`);
+  console.log(`[TWIML] Welcome Greeting: ${welcomeGreeting}`);
+  console.log(`[TWIML] Full XML:\n${twimlXml}`);
+  console.log(`========================================\n`);
+
+  res.type('text/xml').send(twimlXml);
 });
 
 // Twilio webhook: Process speech input
@@ -1255,13 +1279,21 @@ wss.on('connection', (ws, req) => {
 
 // Handle WebSocket upgrade
 server.on('upgrade', (request, socket, head) => {
+  console.log(`[WS UPGRADE] Upgrade request received for: ${request.url}`);
+  console.log(`[WS UPGRADE] Host: ${request.headers.host}`);
+  console.log(`[WS UPGRADE] Origin: ${request.headers.origin}`);
+
   const url = new URL(request.url, `http://${request.headers.host}`);
+  console.log(`[WS UPGRADE] Parsed pathname: ${url.pathname}`);
 
   if (url.pathname === '/api/voice/websocket') {
+    console.log(`[WS UPGRADE] Path matches! Handling upgrade...`);
     wss.handleUpgrade(request, socket, head, (ws) => {
+      console.log(`[WS UPGRADE] Upgrade successful! Emitting connection event...`);
       wss.emit('connection', ws, request);
     });
   } else {
+    console.log(`[WS UPGRADE] Path does not match. Destroying socket. Expected: /api/voice/websocket, Got: ${url.pathname}`);
     socket.destroy();
   }
 });
@@ -1269,4 +1301,5 @@ server.on('upgrade', (request, socket, head) => {
 // Start server
 server.listen(PORT, () => {
   console.log(`Your AI Solution server is running on http://localhost:${PORT}`);
+  console.log(`WebSocket server ready on ws://localhost:${PORT}/api/voice/websocket`);
 });
