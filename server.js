@@ -7,9 +7,14 @@ const VoiceResponse = twilio.twiml.VoiceResponse;
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const database = require('./database');
+const WebSocket = require('ws');
+const http = require('http');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Create HTTP server
+const server = http.createServer(app);
 
 // Initialize database and queries
 database.initializeDatabase();
@@ -43,10 +48,42 @@ if (process.env.TWILIO_ACCOUNT_SID &&
 const ENABLE_TRIAL_RESTRICTIONS = process.env.ENABLE_TRIAL_RESTRICTIONS === 'true' || false;
 
 // In-memory storage for call sessions and trial tracking
-const callSessions = new Map(); // CallSid -> { businessInfo, conversationHistory, startTime, businessName, from }
+const callSessions = new Map(); // CallSid -> { businessInfo, conversationHistory, startTime, businessName, from, currentLanguage, lastDetectedLanguage, languageDetectionCount }
 const trialPhoneNumbers = new Set(); // Phone numbers that have used their free trial
 const businessSessions = new Map(); // SessionId -> { businessInfo, createdAt, sessionId }
 const twilioNumberToSession = new Map(); // Twilio number -> SessionId mapping for multi-number support
+
+// Create WebSocket server for ConversationRelay
+const wss = new WebSocket.Server({ noServer: true });
+
+// Language configuration for ConversationRelay
+const LANGUAGE_CONFIG = {
+  'nl-NL': { voice: 'Lotte', provider: 'Amazon' },
+  'en-US': { voice: 'Salli', provider: 'Amazon' },
+  'en-GB': { voice: 'Amy', provider: 'Amazon' },
+  'de-DE': { voice: 'Marlene', provider: 'Amazon' },
+  'fr-FR': { voice: 'Celine', provider: 'Amazon' },
+  'es-ES': { voice: 'Conchita', provider: 'Amazon' },
+  'ar-SA': { voice: 'Zeina', provider: 'Amazon' },
+  'tr-TR': { voice: 'Filiz', provider: 'Amazon' },
+  'pl-PL': { voice: 'Ewa', provider: 'Amazon' },
+  'pt-BR': { voice: 'Vitoria', provider: 'Amazon' },
+  'it-IT': { voice: 'Carla', provider: 'Amazon' }
+};
+
+// Map simplified language codes to full language codes
+const LANGUAGE_CODE_MAP = {
+  'nl': 'nl-NL',
+  'en': 'en-US',
+  'de': 'de-DE',
+  'fr': 'fr-FR',
+  'es': 'es-ES',
+  'ar': 'ar-SA',
+  'tr': 'tr-TR',
+  'pl': 'pl-PL',
+  'pt': 'pt-BR',
+  'it': 'it-IT'
+};
 
 console.log(`Trial restrictions: ${ENABLE_TRIAL_RESTRICTIONS ? 'ENABLED' : 'DISABLED (Testing Mode)'}`);
 
@@ -567,6 +604,30 @@ app.post('/api/voice/incoming', (req, res) => {
     trialPhoneNumbers.add(from);
   }
 
+  // Get primary language from business info (default to Dutch)
+  let primaryLanguage = 'nl-NL';
+  if (businessInfo.languages && businessInfo.languages.length > 0) {
+    // Parse languages if it's a JSON string
+    const languages = typeof businessInfo.languages === 'string'
+      ? JSON.parse(businessInfo.languages)
+      : businessInfo.languages;
+
+    // Map language names to codes
+    const langMap = {
+      'Dutch': 'nl-NL',
+      'English': 'en-US',
+      'German': 'de-DE',
+      'French': 'fr-FR',
+      'Spanish': 'es-ES',
+      'Arabic': 'ar-SA',
+      'Turkish': 'tr-TR',
+      'Polish': 'pl-PL',
+      'Portuguese': 'pt-BR',
+      'Italian': 'it-IT'
+    };
+    primaryLanguage = langMap[languages[0]] || 'nl-NL';
+  }
+
   // Create call session (each call is independent)
   callSessions.set(callSid, {
     businessInfo: businessInfo,
@@ -574,21 +635,50 @@ app.post('/api/voice/incoming', (req, res) => {
     conversationHistory: [],
     startTime: callStartTime,
     from: from,
-    sessionId: sessionId
+    sessionId: sessionId,
+    currentLanguage: primaryLanguage,
+    lastDetectedLanguage: null,
+    languageDetectionCount: 0
   });
 
-  // Greet and gather speech
-  const businessName = businessInfo.businessName;
-  twiml.say({
-    voice: 'Polly.Joanna'
-  }, `Hello! Thank you for calling ${businessName}. How can I help you today?`);
+  // Get welcome greeting in the business's primary language
+  const greetings = {
+    'nl-NL': `Hallo! Bedankt voor het bellen naar ${businessInfo.businessName}. Hoe kan ik u helpen?`,
+    'en-US': `Hello! Thank you for calling ${businessInfo.businessName}. How can I help you today?`,
+    'en-GB': `Hello! Thank you for calling ${businessInfo.businessName}. How can I help you today?`,
+    'de-DE': `Hallo! Vielen Dank für Ihren Anruf bei ${businessInfo.businessName}. Wie kann ich Ihnen helfen?`,
+    'fr-FR': `Bonjour! Merci d'avoir appelé ${businessInfo.businessName}. Comment puis-je vous aider?`,
+    'es-ES': `¡Hola! Gracias por llamar a ${businessInfo.businessName}. ¿Cómo puedo ayudarte?`,
+    'ar-SA': `مرحباً! شكراً لاتصالك بـ ${businessInfo.businessName}. كيف يمكنني مساعدتك؟`,
+    'tr-TR': `Merhaba! ${businessInfo.businessName}'i aradığınız için teşekkür ederiz. Size nasıl yardımcı olabilirim?`,
+    'pl-PL': `Cześć! Dziękujemy za telefon do ${businessInfo.businessName}. Jak mogę pomóc?`,
+    'pt-BR': `Olá! Obrigado por ligar para ${businessInfo.businessName}. Como posso ajudá-lo?`,
+    'it-IT': `Ciao! Grazie per aver chiamato ${businessInfo.businessName}. Come posso aiutarti?`
+  };
+  const welcomeGreeting = greetings[primaryLanguage] || greetings['en-US'];
 
-  twiml.gather({
-    input: 'speech',
-    action: '/api/voice/process',
-    method: 'POST',
-    speechTimeout: 'auto',
-    speechModel: 'phone_call'
+  // Create ConversationRelay with multi-language support
+  const connect = twiml.connect();
+  const conversationRelay = connect.conversationRelay({
+    url: `wss://${req.headers.host}/api/voice/websocket?CallSid=${callSid}`,
+    language: 'multi', // Start with multi-language detection enabled
+    ttsProvider: 'Amazon',
+    transcriptionProvider: 'Deepgram',
+    speechModel: 'nova-2-general',
+    welcomeGreeting: welcomeGreeting,
+    voice: LANGUAGE_CONFIG[primaryLanguage].voice // Use primary language voice for greeting
+  });
+
+  // Add all supported languages
+  Object.keys(LANGUAGE_CONFIG).forEach(langCode => {
+    const config = LANGUAGE_CONFIG[langCode];
+    conversationRelay.language({
+      code: langCode,
+      voice: config.voice,
+      ttsProvider: 'Amazon',
+      transcriptionProvider: 'Deepgram',
+      speechModel: 'nova-2-general'
+    });
   });
 
   res.type('text/xml').send(twiml.toString());
@@ -892,12 +982,291 @@ HANDLING REQUESTS:
 Remember: You ARE the receptionist for ${businessInfo.businessName}. Sound warm, natural, and professional like a real person on the phone.`;
 }
 
+// Helper function to build system prompt for voice calls with specific language
+function buildSystemPromptForVoiceWithLanguage(businessInfo, targetLanguage) {
+  return `You are the receptionist for ${businessInfo.businessName}, a ${businessInfo.businessType}.
+
+BUSINESS INFORMATION:
+${businessInfo.description}
+
+OPENING HOURS:
+${businessInfo.openingHours}
+
+ACTIVE LANGUAGE:
+Reply in ${targetLanguage}. The system has detected the caller is speaking ${targetLanguage}.
+
+LANGUAGE SWITCHING:
+If the caller explicitly asks you to speak a different language (e.g., "Can you speak English?", "Spreek je Nederlands?"), reply naturally in that language. Also include this JSON at the end of your response: {"detected_language": "xx"} where xx is the two-letter language code (nl, en, de, fr, es, ar, tr, pl, pt, it).
+
+SPECIAL RULES:
+${businessInfo.specialRules}
+
+PHONE CALL COMMUNICATION STYLE (CRITICAL):
+- This is a PHONE CALL, not a text message
+- Keep responses VERY short: 2-3 sentences maximum
+- Speak naturally like a friendly, professional receptionist would on the phone
+- Use contractions: "we're" not "we are", "don't" not "do not"
+- Use short natural filler words: "Sure!", "Of course!", "Let me check that for you", "Great question"
+- NEVER say "As an AI" or "I'm an AI assistant" - just answer naturally
+- NEVER use emojis (you're speaking, not texting!)
+- NEVER use bullet points or numbered lists - speak in normal sentences
+- NEVER use markdown formatting like asterisks or hashtags
+- NEVER repeat full menus or price lists unless specifically asked - give relevant info only
+- NEVER announce language switches - just naturally continue in the requested language
+- Use contractions to sound more natural when spoken
+
+HANDLING REQUESTS:
+- For reservations/orders: Confirm details back to them ("So that's a large pepperoni and two colas, is that right?")
+- If you don't know something: "I'm not sure about that, but I can have someone from the team get back to you. Can I take your number?"
+- To close conversation: "Is there anything else I can help with?" then "Thanks for calling, have a great day!"
+
+Remember: You ARE the receptionist for ${businessInfo.businessName}. Sound warm, natural, and professional like a real person on the phone.`;
+}
+
 // Helper function to generate session ID
 function generateSessionId() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
+// Helper function to get language name from code
+function getLanguageName(code) {
+  const names = {
+    'nl-NL': 'Dutch', 'nl': 'Dutch',
+    'en-US': 'English', 'en-GB': 'English', 'en': 'English',
+    'de-DE': 'German', 'de': 'German',
+    'fr-FR': 'French', 'fr': 'French',
+    'es-ES': 'Spanish', 'es': 'Spanish',
+    'ar-SA': 'Arabic', 'ar': 'Arabic',
+    'tr-TR': 'Turkish', 'tr': 'Turkish',
+    'pl-PL': 'Polish', 'pl': 'Polish',
+    'pt-BR': 'Portuguese', 'pt': 'Portuguese',
+    'it-IT': 'Italian', 'it': 'Italian'
+  };
+  return names[code] || 'English';
+}
+
+// Helper function to send language switch message to Twilio
+function sendLanguageSwitch(ws, languageCode) {
+  const message = {
+    type: 'language',
+    ttsLanguage: languageCode,
+    transcriptionLanguage: languageCode
+  };
+  ws.send(JSON.stringify(message));
+  console.log(`[LANGUAGE SWITCH] Switching to ${languageCode}`);
+}
+
+// WebSocket handler for ConversationRelay
+wss.on('connection', (ws, req) => {
+  // Extract CallSid from query parameters
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const callSid = url.searchParams.get('CallSid');
+
+  if (!callSid) {
+    console.log('[WS ERROR] No CallSid provided');
+    ws.close();
+    return;
+  }
+
+  console.log(`[WS CONNECTED] CallSid: ${callSid}`);
+
+  const session = callSessions.get(callSid);
+  if (!session) {
+    console.log(`[WS ERROR] No session found for CallSid: ${callSid}`);
+    ws.close();
+    return;
+  }
+
+  console.log(`[WS] Business: ${session.businessName}`);
+
+  // Handle incoming messages from Twilio
+  ws.on('message', async (data) => {
+    try {
+      const message = JSON.parse(data.toString());
+
+      // Handle prompt messages (caller's speech)
+      if (message.type === 'prompt') {
+        const voicePrompt = message.voicePrompt;
+        const detectedLang = message.lang; // Will be simplified code like "en" not "en-US" when using multi
+
+        console.log(`[WS PROMPT] Text: "${voicePrompt}"`);
+        console.log(`[WS PROMPT] Detected language: ${detectedLang}`);
+
+        // Check time limit
+        const elapsed = (Date.now() - session.startTime) / 1000 / 60; // minutes
+        if (elapsed >= 3) {
+          const textMessage = {
+            type: 'text',
+            token: 'Thanks for trying Your AI Solution! Visit youraisolution.nl to get this for your business. Goodbye!',
+            last: true
+          };
+          ws.send(JSON.stringify(textMessage));
+
+          const callDuration = ((Date.now() - session.startTime) / 1000).toFixed(1);
+          console.log(`[CALL END] CallSid: ${callSid}`);
+          console.log(`[CALL END] Business: ${session.businessName}`);
+          console.log(`[CALL END] Duration: ${callDuration}s`);
+          console.log(`[CALL END] Reason: Trial time limit reached`);
+
+          callSessions.delete(callSid);
+          ws.close();
+          return;
+        }
+
+        // Language detection logic: switch only if 2 consecutive messages are in a different language
+        if (detectedLang) {
+          const fullLangCode = LANGUAGE_CODE_MAP[detectedLang] || detectedLang;
+
+          if (fullLangCode !== session.currentLanguage) {
+            // Check if this is the same language as last detection
+            if (session.lastDetectedLanguage === fullLangCode) {
+              session.languageDetectionCount++;
+
+              // Switch language after 2 consecutive detections
+              if (session.languageDetectionCount >= 2) {
+                console.log(`[LANGUAGE] Switching from ${session.currentLanguage} to ${fullLangCode}`);
+                session.currentLanguage = fullLangCode;
+                session.languageDetectionCount = 0;
+                session.lastDetectedLanguage = null;
+
+                // Send language switch message to Twilio
+                sendLanguageSwitch(ws, fullLangCode);
+              }
+            } else {
+              // Different language detected, start counting
+              session.lastDetectedLanguage = fullLangCode;
+              session.languageDetectionCount = 1;
+            }
+          } else {
+            // Same as current language, reset detection
+            session.lastDetectedLanguage = null;
+            session.languageDetectionCount = 0;
+          }
+        }
+
+        // Build system prompt with current language
+        const languageName = getLanguageName(session.currentLanguage);
+        const systemPrompt = buildSystemPromptForVoiceWithLanguage(session.businessInfo, languageName);
+
+        // Build messages
+        const messages = [
+          ...session.conversationHistory,
+          {
+            role: 'user',
+            content: voicePrompt
+          }
+        ];
+
+        // Call Claude API
+        try {
+          console.log(`[CLAUDE API] Calling API for ${session.businessName}...`);
+          const apiStartTime = Date.now();
+
+          const response = await anthropic.messages.create({
+            model: 'claude-haiku-4-5',
+            max_tokens: 300,
+            system: systemPrompt,
+            messages: messages
+          });
+
+          const apiDuration = Date.now() - apiStartTime;
+          console.log(`[CLAUDE API] Response received in ${apiDuration}ms`);
+
+          const reply = response.content[0].text;
+
+          // Check if Claude detected a language switch request
+          let detectedLanguageFromClaude = null;
+          try {
+            const jsonMatch = reply.match(/\{[^}]*"detected_language"[^}]*\}/);
+            if (jsonMatch) {
+              const jsonData = JSON.parse(jsonMatch[0]);
+              detectedLanguageFromClaude = jsonData.detected_language;
+            }
+          } catch (e) {
+            // No JSON found, that's okay
+          }
+
+          // If Claude detected a language switch, apply it
+          if (detectedLanguageFromClaude && LANGUAGE_CODE_MAP[detectedLanguageFromClaude]) {
+            const newLang = LANGUAGE_CODE_MAP[detectedLanguageFromClaude];
+            if (newLang !== session.currentLanguage) {
+              console.log(`[LANGUAGE] Claude detected switch request to ${newLang}`);
+              session.currentLanguage = newLang;
+              sendLanguageSwitch(ws, newLang);
+            }
+          }
+
+          // Remove JSON metadata from reply before sending
+          const cleanReply = reply.replace(/\{[^}]*"detected_language"[^}]*\}/g, '').trim();
+
+          // Strip emojis and formatting for TTS
+          const ttsReply = stripEmojisAndFormatting(cleanReply);
+
+          // Update conversation history
+          session.conversationHistory.push({
+            role: 'user',
+            content: voicePrompt
+          });
+          session.conversationHistory.push({
+            role: 'assistant',
+            content: reply
+          });
+
+          // Send text response to Twilio (will be converted to speech)
+          const textMessage = {
+            type: 'text',
+            token: ttsReply,
+            last: true
+          };
+          ws.send(JSON.stringify(textMessage));
+
+        } catch (error) {
+          console.error(`[CLAUDE API] Error for ${session.businessName}:`, error.message);
+
+          // Send error message
+          const errorMessage = {
+            type: 'text',
+            token: "I'm having trouble processing that. Could you try asking again?",
+            last: true
+          };
+          ws.send(JSON.stringify(errorMessage));
+        }
+      }
+
+      // Handle other message types (interrupt, dtmf, etc.)
+      if (message.type === 'interrupt') {
+        console.log(`[WS INTERRUPT] CallSid: ${callSid}`);
+      }
+
+    } catch (error) {
+      console.error('[WS ERROR] Error processing message:', error);
+    }
+  });
+
+  ws.on('close', () => {
+    console.log(`[WS CLOSED] CallSid: ${callSid}`);
+    callSessions.delete(callSid);
+  });
+
+  ws.on('error', (error) => {
+    console.error(`[WS ERROR] CallSid: ${callSid}`, error);
+  });
+});
+
+// Handle WebSocket upgrade
+server.on('upgrade', (request, socket, head) => {
+  const url = new URL(request.url, `http://${request.headers.host}`);
+
+  if (url.pathname === '/api/voice/websocket') {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
+});
+
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Your AI Solution server is running on http://localhost:${PORT}`);
 });
