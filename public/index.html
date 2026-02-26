@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your AI Solution - AI Receptionist for Your Business</title>
+    <title>YourAISolution - AI Receptionist for Your Business</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- i18next for multi-language support -->
     <script src="https://cdn.jsdelivr.net/npm/i18next@21.9.1/i18next.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.4.4/i18nextHttpBackend.min.js"></script>
     <script src="/js/i18n-config.js"></script>
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
         .chat-messages {
             max-height: 400px;
             overflow-y: auto;
@@ -27,32 +34,37 @@
         .chat-messages::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .hero-gradient {
+            background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+        }
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-white">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <a href="/" class="text-xl font-bold text-purple-600">Your AI Solution</a>
+                    <a href="/" class="text-xl font-bold text-black">YourAISolution</a>
                 </div>
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="/" class="text-gray-700 hover:text-purple-600 transition" data-i18n="nav.home">Home</a>
-                    <a href="/pricing" class="text-gray-700 hover:text-purple-600 transition" data-i18n="nav.pricing">Pricing</a>
-                    <a href="/login" class="text-gray-700 hover:text-purple-600 transition" data-i18n="nav.login">Login</a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#services" class="text-gray-600 hover:text-black transition font-medium">Services</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-black transition font-medium">How it Works</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-black transition font-medium">Pricing</a>
+                    <a href="#contact" class="text-gray-600 hover:text-black transition font-medium">Contact</a>
                     <!-- Language Switcher -->
                     <div id="language-switcher"></div>
-                    <a href="/signup" class="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition" data-i18n="nav.signup">
-                        Get Started
+                    <a href="#demo" class="bg-black text-white px-6 py-2.5 rounded-lg hover:bg-gray-800 transition font-semibold">
+                        Try Free Demo
                     </a>
                 </div>
                 <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-gray-700 hover:text-purple-600">
+                <div class="md:hidden flex items-center space-x-2">
+                    <div id="language-switcher-mobile"></div>
+                    <button onclick="toggleMobileMenu()" class="text-gray-700 hover:text-black">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -61,54 +73,64 @@
             </div>
         </div>
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t">
+        <div id="mobile-menu" class="hidden md:hidden border-t bg-white">
             <div class="px-4 py-3 space-y-2">
-                <a href="/" class="block text-gray-700 hover:text-purple-600 py-2" data-i18n="nav.home">Home</a>
-                <a href="/pricing" class="block text-gray-700 hover:text-purple-600 py-2" data-i18n="nav.pricing">Pricing</a>
-                <a href="/login" class="block text-gray-700 hover:text-purple-600 py-2" data-i18n="nav.login">Login</a>
-                <a href="/signup" class="block bg-purple-600 text-white px-4 py-2 rounded-lg text-center hover:bg-purple-700" data-i18n="nav.signup">
-                    Get Started
+                <a href="#services" onclick="toggleMobileMenu()" class="block text-gray-600 hover:text-black py-2 font-medium">Services</a>
+                <a href="#how-it-works" onclick="toggleMobileMenu()" class="block text-gray-600 hover:text-black py-2 font-medium">How it Works</a>
+                <a href="#pricing" onclick="toggleMobileMenu()" class="block text-gray-600 hover:text-black py-2 font-medium">Pricing</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="block text-gray-600 hover:text-black py-2 font-medium">Contact</a>
+                <a href="#demo" onclick="toggleMobileMenu()" class="block bg-black text-white px-4 py-2 rounded-lg text-center hover:bg-gray-800 font-semibold mt-2">
+                    Try Free Demo
                 </a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="hero" class="gradient-bg text-white py-20 px-4">
-        <div class="max-w-6xl mx-auto text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6" data-i18n="hero.title">Your AI Solution</h1>
-            <p class="text-xl md:text-2xl mb-8 opacity-90" data-i18n="hero.subtitle">
-                AI that answers calls and messages for your business 24/7
-            </p>
-            <p class="text-lg md:text-xl mb-10 max-w-3xl mx-auto" data-i18n="hero.description">
-                Never miss a customer again. Our AI receptionist handles inquiries, schedules appointments, and provides information about your business around the clock in multiple languages.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="/signup" class="bg-white text-purple-600 font-bold py-4 px-8 rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg" data-i18n="hero.cta_trial">
-                    Start Free Trial
-                </a>
-                <a href="/pricing" class="bg-transparent border-2 border-white text-white font-bold py-4 px-8 rounded-full hover:bg-white hover:text-purple-600 transition-all" data-i18n="hero.cta_pricing">
-                    View Pricing
-                </a>
+    <section id="hero" class="hero-gradient pt-24 pb-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Left Column -->
+                <div class="text-left">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                        Your AI Receptionist That Never Sleeps
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
+                        Let AI answer your business calls, book appointments, and chat with your customers — 24/7, in Dutch and English.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#demo" class="inline-flex items-center justify-center bg-black text-white font-semibold py-4 px-8 rounded-lg hover:bg-gray-800 transition-all shadow-lg">
+                            Try Free Demo
+                        </a>
+                        <a href="#how-it-works" class="inline-flex items-center justify-center bg-white text-black font-semibold py-4 px-8 rounded-lg border-2 border-gray-300 hover:border-black transition-all">
+                            See How It Works
+                        </a>
+                    </div>
+                </div>
+                <!-- Right Column -->
+                <div class="flex justify-center md:justify-end">
+                    <img src="https://placehold.co/600x500/2563eb/white?text=AI+Receptionist+Demo"
+                         alt="AI Receptionist Demo"
+                         class="rounded-2xl shadow-2xl w-full max-w-lg">
+                </div>
             </div>
-            <p class="mt-6 text-sm opacity-75" data-i18n="hero.trial_note">7 days free • No credit card required</p>
         </div>
     </section>
 
     <!-- Form Section -->
-    <section id="form-section" class="py-16 px-4">
+    <section id="demo" class="py-20 px-4 bg-white">
         <div class="max-w-3xl mx-auto">
             <!-- CTA Banner -->
-            <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl p-6 mb-8 text-center">
+            <div class="bg-black text-white rounded-xl p-6 mb-8 text-center">
                 <h3 class="text-2xl font-bold mb-2" data-i18n="demo.cta_title">Want this for your business?</h3>
                 <p class="mb-4" data-i18n="demo.cta_subtitle">Start today with 7 days free - no credit card required!</p>
-                <a href="/signup" class="inline-block bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition" data-i18n="demo.cta_button">
+                <a href="/signup" class="inline-block bg-white text-black font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition" data-i18n="demo.cta_button">
                     Create Free Account
                 </a>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center" data-i18n="demo.title">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 md:p-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 text-center" data-i18n="demo.title">
                     Quick Test Demo
                 </h2>
                 <p class="text-gray-600 mb-8 text-center" data-i18n="demo.subtitle">
@@ -116,7 +138,7 @@
                 </p>
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                     <p class="text-sm text-gray-700 text-center" data-i18n-html="demo.disclaimer">
-                        <strong>Note:</strong> This is for testing only. <a href="/signup" class="text-purple-600 hover:underline font-semibold">Create an account</a> for full access and your own phone number.
+                        <strong>Note:</strong> This is for testing only. <a href="/signup" class="text-blue-600 hover:underline font-semibold">Create an account</a> for full access and your own phone number.
                     </p>
                 </div>
 
@@ -130,7 +152,7 @@
                             type="text"
                             name="businessName"
                             required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
                             data-i18n-placeholder="demo.business_name_placeholder"
                         >
                     </div>
@@ -143,7 +165,7 @@
                         <select
                             name="businessType"
                             required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
                         >
                             <option value="" data-i18n="demo.business_type_select">Select a type...</option>
                             <option value="restaurant" data-i18n="demo.business_types.restaurant">Restaurant</option>
@@ -163,7 +185,7 @@
                             name="description"
                             required
                             rows="4"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none"
                             data-i18n-placeholder="demo.business_description_placeholder"
                         ></textarea>
                     </div>
@@ -177,7 +199,7 @@
                             name="openingHours"
                             required
                             rows="3"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none"
                             data-i18n-placeholder="demo.opening_hours_placeholder"
                         ></textarea>
                     </div>
@@ -189,11 +211,11 @@
                         </label>
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3">
-                                <input type="checkbox" name="languages" value="Dutch" class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-2 focus:ring-purple-500">
+                                <input type="checkbox" name="languages" value="Dutch" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-600">
                                 <span class="text-gray-700" data-i18n="demo.language_dutch">Dutch</span>
                             </label>
                             <label class="flex items-center space-x-3">
-                                <input type="checkbox" name="languages" value="English" class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-2 focus:ring-purple-500">
+                                <input type="checkbox" name="languages" value="English" class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-600">
                                 <span class="text-gray-700" data-i18n="demo.language_english">English</span>
                             </label>
                         </div>
@@ -207,7 +229,7 @@
                         <textarea
                             name="specialRules"
                             rows="3"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none"
                             data-i18n-placeholder="demo.special_rules_placeholder"
                         ></textarea>
                     </div>
@@ -215,7 +237,7 @@
                     <!-- Submit Button -->
                     <button
                         type="submit"
-                        class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-bold py-4 px-8 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all transform hover:scale-[1.02] shadow-lg"
+                        class="w-full bg-black text-white font-bold py-4 px-8 rounded-lg hover:bg-gray-800 transition-all shadow-lg"
                         data-i18n="demo.submit_button"
                     >
                         Start Testing Your AI Receptionist
@@ -226,11 +248,11 @@
     </section>
 
     <!-- Chat Interface Section (Hidden Initially) -->
-    <section id="chat-section" class="hidden py-16 px-4 bg-gray-100">
+    <section id="chat-section" class="hidden py-16 px-4 bg-gray-50">
         <div class="max-w-4xl mx-auto">
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
                 <!-- Chat Header -->
-                <div class="gradient-bg text-white p-6">
+                <div class="bg-black text-white p-6">
                     <h3 class="text-2xl font-bold mb-2" data-i18n="demo.chat.title">Test Your AI Receptionist</h3>
                     <p class="opacity-90" data-i18n="demo.chat.subtitle">Ask questions as if you're a customer!</p>
                 </div>
@@ -238,7 +260,7 @@
                 <!-- Chat Messages -->
                 <div id="chat-messages" class="chat-messages p-6 space-y-4 bg-gray-50 min-h-[300px]">
                     <div class="flex items-start space-x-3">
-                        <div class="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        <div class="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                             AI
                         </div>
                         <div class="bg-white p-4 rounded-lg shadow max-w-[80%]">
@@ -256,13 +278,13 @@
                         <input
                             type="text"
                             id="user-message"
-                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
                             required
                             data-i18n-placeholder="demo.chat.input_placeholder"
                         >
                         <button
                             type="submit"
-                            class="bg-purple-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-purple-700 transition-all"
+                            class="bg-black text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-800 transition-all"
                             data-i18n="demo.chat.send_button"
                         >
                             Send
@@ -270,7 +292,7 @@
                     </form>
                     <button
                         onclick="resetDemo()"
-                        class="mt-4 text-purple-600 hover:text-purple-700 font-semibold"
+                        class="mt-4 text-black hover:text-gray-700 font-semibold"
                         data-i18n="demo.chat.reset_button"
                     >
                         ← Start Over with New Business
@@ -293,9 +315,9 @@
     </section>
 
     <!-- Phone Number Display Section (Hidden Initially) -->
-    <section id="phone-section" class="hidden py-16 px-4 bg-gradient-to-br from-green-50 to-blue-50">
+    <section id="phone-section" class="hidden py-16 px-4 bg-gray-50">
         <div class="max-w-2xl mx-auto">
-            <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 md:p-12 text-center">
                 <div class="mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
@@ -441,7 +463,7 @@
             if (sender === 'user') {
                 messageDiv.className = 'flex items-start space-x-3 justify-end';
                 messageDiv.innerHTML = `
-                    <div class="bg-purple-600 text-white p-4 rounded-lg shadow max-w-[80%]">
+                    <div class="bg-black text-white p-4 rounded-lg shadow max-w-[80%]">
                         <p>${escapeHtml(message)}</p>
                     </div>
                     <div class="flex-shrink-0 w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold">
@@ -451,7 +473,7 @@
             } else {
                 messageDiv.className = 'flex items-start space-x-3';
                 messageDiv.innerHTML = `
-                    <div class="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                    <div class="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                         AI
                     </div>
                     <div class="bg-white p-4 rounded-lg shadow max-w-[80%]">
@@ -478,7 +500,7 @@
             sessionId = null;
             document.getElementById('chat-messages').innerHTML = `
                 <div class="flex items-start space-x-3">
-                    <div class="flex-shrink-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                    <div class="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                         AI
                     </div>
                     <div class="bg-white p-4 rounded-lg shadow max-w-[80%]">
