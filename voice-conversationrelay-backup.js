@@ -43,25 +43,10 @@ if (process.env.TWILIO_ACCOUNT_SID &&
 const ENABLE_TRIAL_RESTRICTIONS = process.env.ENABLE_TRIAL_RESTRICTIONS === 'true' || false;
 
 // In-memory storage for call sessions and trial tracking
-const callSessions = new Map(); // CallSid -> { businessInfo, conversationHistory, startTime, businessName, from, lastLanguage }
+const callSessions = new Map(); // CallSid -> { businessInfo, conversationHistory, startTime, businessName, from }
 const trialPhoneNumbers = new Set(); // Phone numbers that have used their free trial
 const businessSessions = new Map(); // SessionId -> { businessInfo, createdAt, sessionId }
 const twilioNumberToSession = new Map(); // Twilio number -> SessionId mapping for multi-number support
-
-// Language to Polly voice mapping
-const LANGUAGE_VOICE_MAP = {
-  'nl-NL': { language: 'nl-NL', voice: 'Polly.Lotte' },
-  'en-US': { language: 'en-US', voice: 'Polly.Salli' },
-  'en-GB': { language: 'en-GB', voice: 'Polly.Amy' },
-  'de-DE': { language: 'de-DE', voice: 'Polly.Marlene' },
-  'fr-FR': { language: 'fr-FR', voice: 'Polly.Celine' },
-  'es-ES': { language: 'es-ES', voice: 'Polly.Conchita' },
-  'tr-TR': { language: 'tr-TR', voice: 'Polly.Filiz' },
-  'it-IT': { language: 'it-IT', voice: 'Polly.Carla' },
-  'pl-PL': { language: 'pl-PL', voice: 'Polly.Ewa' },
-  'pt-BR': { language: 'pt-BR', voice: 'Polly.Vitoria' },
-  'ar-SA': { language: 'arb', voice: 'Polly.Zeina' } // Note: Polly uses 'arb' for Arabic
-};
 
 console.log(`Trial restrictions: ${ENABLE_TRIAL_RESTRICTIONS ? 'ENABLED' : 'DISABLED (Testing Mode)'}`);
 
@@ -526,13 +511,6 @@ app.post('/api/voice/incoming', (req, res) => {
   console.log(`[CALL START] To: ${to}`);
   console.log(`[CALL START] Time: ${new Date().toISOString()}`);
 
-  // Prevent duplicate processing - check if this call already has a session
-  if (callSessions.has(callSid)) {
-    console.log(`[CALL DUPLICATE] CallSid ${callSid} already being processed. Ignoring duplicate request.`);
-    const twiml = new VoiceResponse();
-    return res.type('text/xml').send(twiml.toString());
-  }
-
   const twiml = new VoiceResponse();
 
   // Check if this phone number has already used their trial (only if restrictions are enabled)
@@ -589,30 +567,6 @@ app.post('/api/voice/incoming', (req, res) => {
     trialPhoneNumbers.add(from);
   }
 
-  // Get primary language from business info (default to Dutch)
-  let primaryLanguage = 'nl-NL';
-  if (businessInfo.languages && businessInfo.languages.length > 0) {
-    // Parse languages if it's a JSON string
-    const languages = typeof businessInfo.languages === 'string'
-      ? JSON.parse(businessInfo.languages)
-      : businessInfo.languages;
-
-    // Map language names to codes
-    const langMap = {
-      'Dutch': 'nl-NL',
-      'English': 'en-US',
-      'German': 'de-DE',
-      'French': 'fr-FR',
-      'Spanish': 'es-ES',
-      'Arabic': 'ar-SA',
-      'Turkish': 'tr-TR',
-      'Polish': 'pl-PL',
-      'Portuguese': 'pt-BR',
-      'Italian': 'it-IT'
-    };
-    primaryLanguage = langMap[languages[0]] || 'nl-NL';
-  }
-
   // Create call session (each call is independent)
   callSessions.set(callSid, {
     businessInfo: businessInfo,
@@ -620,56 +574,24 @@ app.post('/api/voice/incoming', (req, res) => {
     conversationHistory: [],
     startTime: callStartTime,
     from: from,
-    sessionId: sessionId,
-    lastLanguage: primaryLanguage // Track the last detected language for Gather
+    sessionId: sessionId
   });
 
-  // Get welcome greeting in the business's primary language
-  const greetings = {
-    'nl-NL': `Hallo! Bedankt voor het bellen naar ${businessInfo.businessName}. Hoe kan ik u helpen?`,
-    'en-US': `Hello! Thank you for calling ${businessInfo.businessName}. How can I help you today?`,
-    'en-GB': `Hello! Thank you for calling ${businessInfo.businessName}. How can I help you today?`,
-    'de-DE': `Hallo! Vielen Dank für Ihren Anruf bei ${businessInfo.businessName}. Wie kann ich Ihnen helfen?`,
-    'fr-FR': `Bonjour! Merci d'avoir appelé ${businessInfo.businessName}. Comment puis-je vous aider?`,
-    'es-ES': `¡Hola! Gracias por llamar a ${businessInfo.businessName}. ¿Cómo puedo ayudarte?`,
-    'ar-SA': `مرحباً! شكراً لاتصالك بـ ${businessInfo.businessName}. كيف يمكنني مساعدتك؟`,
-    'tr-TR': `Merhaba! ${businessInfo.businessName}'i aradığınız için teşekkür ederiz. Size nasıl yardımcı olabilirim?`,
-    'pl-PL': `Cześć! Dziękujemy za telefon do ${businessInfo.businessName}. Jak mogę pomóc?`,
-    'pt-BR': `Olá! Obrigado por ligar para ${businessInfo.businessName}. Como posso ajudá-lo?`,
-    'it-IT': `Ciao! Grazie per aver chiamato ${businessInfo.businessName}. Come posso aiutarti?`
-  };
-  const welcomeGreeting = greetings[primaryLanguage] || greetings['en-US'];
-
-  // Get the voice config for the primary language
-  const voiceConfig = LANGUAGE_VOICE_MAP[primaryLanguage] || LANGUAGE_VOICE_MAP['en-US'];
-
-  console.log(`[CALL SETUP] Primary language: ${primaryLanguage}`);
-  console.log(`[CALL SETUP] Welcome voice: ${voiceConfig.voice}`);
-  console.log(`[CALL SETUP] Greeting: ${welcomeGreeting}`);
-
-  // Greet and gather speech (OLD WORKING SYSTEM)
+  // Greet and gather speech
+  const businessName = businessInfo.businessName;
   twiml.say({
-    voice: voiceConfig.voice,
-    language: voiceConfig.language
-  }, welcomeGreeting);
+    voice: 'Polly.Joanna'
+  }, `Hello! Thank you for calling ${businessName}. How can I help you today?`);
 
   twiml.gather({
     input: 'speech',
     action: '/api/voice/process',
     method: 'POST',
     speechTimeout: 'auto',
-    speechModel: 'phone_call',
-    language: voiceConfig.language // Set Gather language to match greeting
+    speechModel: 'phone_call'
   });
 
-  const twimlXml = twiml.toString();
-  console.log(`\n========== TWIML RESPONSE ==========`);
-  console.log(`[TWIML] CallSid: ${callSid}`);
-  console.log(`[TWIML] Using Gather/Say (not ConversationRelay)`);
-  console.log(`[TWIML] Full XML:\n${twimlXml}`);
-  console.log(`========================================\n`);
-
-  res.type('text/xml').send(twimlXml);
+  res.type('text/xml').send(twiml.toString());
 });
 
 // Twilio webhook: Process speech input
@@ -736,8 +658,8 @@ app.post('/api/voice/process', async (req, res) => {
     console.log(`[CLAUDE API] Calling API for ${session.businessName}...`);
     const apiStartTime = Date.now();
 
-    // Build system prompt with multi-language support
-    const systemPrompt = buildSystemPromptForVoiceMultiLanguage(session.businessInfo);
+    // Build system prompt
+    const systemPrompt = buildSystemPromptForVoice(session.businessInfo);
 
     // Build messages
     const messages = [
@@ -765,31 +687,12 @@ app.post('/api/voice/process', async (req, res) => {
     const apiDuration = Date.now() - apiStartTime;
     console.log(`[CLAUDE API] Response received in ${apiDuration}ms`);
 
-    let reply = response.content[0].text;
-
-    // Parse language tag from Claude's response [LANG:xx-XX]
-    let detectedLanguage = session.lastLanguage || 'en-US'; // Default to last language or English
-    const langMatch = reply.match(/\[LANG:([\w-]+)\]/);
-    if (langMatch) {
-      detectedLanguage = langMatch[1];
-      // Remove the language tag from the reply
-      reply = reply.replace(/\[LANG:[\w-]+\]/g, '').trim();
-      console.log(`[LANGUAGE] Detected from Claude: ${detectedLanguage}`);
-    } else {
-      console.log(`[LANGUAGE] No tag found, using default: ${detectedLanguage}`);
-    }
-
-    // Get voice config for the detected language
-    const voiceConfig = LANGUAGE_VOICE_MAP[detectedLanguage] || LANGUAGE_VOICE_MAP['en-US'];
-    console.log(`[VOICE] Using voice: ${voiceConfig.voice} (${voiceConfig.language})`);
-
-    // Update session's last language
-    session.lastLanguage = detectedLanguage;
+    const reply = response.content[0].text;
 
     // Strip emojis and formatting before TTS (safety net)
     const cleanReply = stripEmojisAndFormatting(reply);
-    console.log(`[RESPONSE] Original: ${reply}`);
-    console.log(`[RESPONSE] Cleaned: ${cleanReply}`);
+    console.log(`Original reply: ${reply}`);
+    console.log(`Cleaned reply: ${cleanReply}`);
 
     // Update conversation history (keep original for context)
     session.conversationHistory.push({
@@ -801,10 +704,9 @@ app.post('/api/voice/process', async (req, res) => {
       content: reply
     });
 
-    // Speak the CLEANED response with the correct language voice
+    // Speak the CLEANED response (no emojis!)
     twiml.say({
-      voice: voiceConfig.voice,
-      language: voiceConfig.language
+      voice: 'Polly.Joanna'
     }, cleanReply);
 
     // Check time again before gathering more input
@@ -823,14 +725,13 @@ app.post('/api/voice/process', async (req, res) => {
       twiml.hangup();
       callSessions.delete(callSid);
     } else {
-      // Gather next speech input with the language matching the response
+      // Gather next speech input
       twiml.gather({
         input: 'speech',
         action: '/api/voice/process',
         method: 'POST',
         speechTimeout: 'auto',
-        speechModel: 'phone_call',
-        language: voiceConfig.language // Set Gather language to match response
+        speechModel: 'phone_call'
       });
     }
 
@@ -987,61 +888,6 @@ HANDLING REQUESTS:
 - If you don't know something: "I'm not sure about that, but I can have someone from the team get back to you. Can I take your number?"
 - To close conversation: "Is there anything else I can help with?" then "Thanks for calling, have a great day!"
 - Match the caller's language automatically without asking
-
-Remember: You ARE the receptionist for ${businessInfo.businessName}. Sound warm, natural, and professional like a real person on the phone.`;
-}
-
-// Helper function to build system prompt for voice calls with multi-language support
-function buildSystemPromptForVoiceMultiLanguage(businessInfo) {
-  return `You are a multilingual receptionist for ${businessInfo.businessName}, a ${businessInfo.businessType}.
-
-BUSINESS INFORMATION:
-${businessInfo.description}
-
-OPENING HOURS:
-${businessInfo.openingHours}
-
-SPECIAL RULES:
-${businessInfo.specialRules}
-
-MULTI-LANGUAGE CAPABILITY (CRITICAL):
-- You are a multilingual receptionist and can speak ANY language the caller uses
-- If the caller speaks Dutch, reply in Dutch
-- If the caller speaks English, reply in English
-- If the caller speaks German, reply in German
-- If the caller speaks French, Spanish, Turkish, Italian, Polish, Portuguese, or Arabic - reply in that language
-- NEVER say you cannot speak a language - just reply naturally in their language
-- At the VERY END of your response, on a new line, add the language code like this:
-  [LANG:nl-NL] for Dutch
-  [LANG:en-US] for English (US)
-  [LANG:en-GB] for English (UK)
-  [LANG:de-DE] for German
-  [LANG:fr-FR] for French
-  [LANG:es-ES] for Spanish
-  [LANG:tr-TR] for Turkish
-  [LANG:it-IT] for Italian
-  [LANG:pl-PL] for Polish
-  [LANG:pt-BR] for Portuguese
-  [LANG:ar-SA] for Arabic
-- This language tag MUST always be the last line of your response
-
-PHONE CALL COMMUNICATION STYLE (CRITICAL):
-- This is a PHONE CALL, not a text message
-- Keep responses VERY short: 2-3 sentences maximum
-- Speak naturally like a friendly, professional receptionist would on the phone
-- Use contractions: "we're" not "we are", "don't" not "do not"
-- Use short natural filler words: "Sure!", "Of course!", "Let me check that for you", "Great question"
-- NEVER say "As an AI" or "I'm an AI assistant" - just answer naturally
-- NEVER use emojis (you're speaking, not texting!)
-- NEVER use bullet points or numbered lists - speak in normal sentences
-- NEVER use markdown formatting like asterisks or hashtags
-- NEVER repeat full menus or price lists unless specifically asked - give relevant info only
-- Use contractions to sound more natural when spoken
-
-HANDLING REQUESTS:
-- For reservations/orders: Confirm details back to them ("So that's a large pepperoni and two colas, is that right?")
-- If you don't know something: "I'm not sure about that, but I can have someone from the team get back to you. Can I take your number?"
-- To close conversation: "Is there anything else I can help with?" then "Thanks for calling, have a great day!"
 
 Remember: You ARE the receptionist for ${businessInfo.businessName}. Sound warm, natural, and professional like a real person on the phone.`;
 }
