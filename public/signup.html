@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registreren - Your AI Solution</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- i18next for multi-language support -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@21.9.1/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.4.4/i18nextHttpBackend.min.js"></script>
+    <script src="/js/i18n-config.js"></script>
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
@@ -15,9 +19,11 @@
                     <a href="/" class="text-xl font-bold text-blue-600">Your AI Solution</a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
-                    <a href="/pricing" class="text-gray-700 hover:text-blue-600">Prijzen</a>
-                    <a href="/login" class="text-gray-700 hover:text-blue-600">Inloggen</a>
+                    <a href="/" class="text-gray-700 hover:text-blue-600" data-i18n="nav.home">Home</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-blue-600" data-i18n="nav.pricing">Pricing</a>
+                    <a href="/login" class="text-gray-700 hover:text-blue-600" data-i18n="nav.login">Login</a>
+                    <!-- Language Switcher -->
+                    <div id="language-switcher"></div>
                 </div>
             </div>
         </div>
@@ -28,8 +34,8 @@
         <div class="max-w-md w-full">
             <div class="bg-white rounded-lg shadow-lg p-8">
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Maak een account aan</h2>
-                    <p class="mt-2 text-gray-600">Start uw gratis proefperiode van 7 dagen</p>
+                    <h2 class="text-3xl font-bold text-gray-900" data-i18n="auth.signup.title">Create an Account</h2>
+                    <p class="mt-2 text-gray-600" data-i18n="auth.signup.subtitle">Start your 7-day free trial</p>
                 </div>
 
                 <!-- Error Message -->
@@ -46,48 +52,48 @@
                     <!-- Business Name -->
                     <div>
                         <label for="business_name" class="block text-sm font-medium text-gray-700 mb-1">
-                            Bedrijfsnaam <span class="text-red-500">*</span>
+                            <span data-i18n="auth.signup.business_name">Business Name</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="text" id="business_name" name="business_name" required
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               placeholder="Uw bedrijfsnaam">
+                               data-i18n-placeholder="auth.signup.business_name">
                     </div>
 
                     <!-- Email -->
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                            Email adres <span class="text-red-500">*</span>
+                            <span data-i18n="auth.signup.email">Email Address</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="email" id="email" name="email" required
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               placeholder="uw@email.nl">
+                               data-i18n-placeholder="auth.signup.email">
                     </div>
 
                     <!-- Password -->
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                            Wachtwoord <span class="text-red-500">*</span>
+                            <span data-i18n="auth.signup.password">Password</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="password" id="password" name="password" required minlength="8"
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               placeholder="Minimaal 8 karakters">
-                        <p class="mt-1 text-sm text-gray-500">Minimaal 8 karakters</p>
+                               data-i18n-placeholder="auth.signup.password_min">
+                        <p class="mt-1 text-sm text-gray-500" data-i18n="auth.signup.password_min">Minimum 8 characters</p>
                     </div>
 
                     <!-- Confirm Password -->
                     <div>
                         <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">
-                            Bevestig wachtwoord <span class="text-red-500">*</span>
+                            <span data-i18n="auth.signup.confirm_password">Confirm Password</span> <span class="text-red-500">*</span>
                         </label>
                         <input type="password" id="confirm_password" name="confirm_password" required
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                               placeholder="Herhaal uw wachtwoord">
+                               data-i18n-placeholder="auth.signup.confirm_password_placeholder">
                     </div>
 
                     <!-- Plan Selection -->
                     <div>
                         <label for="plan" class="block text-sm font-medium text-gray-700 mb-1">
-                            Kies uw pakket <span class="text-red-500">*</span>
+                            <span data-i18n="auth.signup.plan">Choose Your Package</span> <span class="text-red-500">*</span>
                         </label>
                         <select id="plan" name="plan" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -101,22 +107,23 @@
                     <div class="flex items-start">
                         <input type="checkbox" id="terms" name="terms" required
                                class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="terms" class="ml-2 text-sm text-gray-700">
-                            Ik ga akkoord met de <a href="#" class="text-blue-600 hover:underline">algemene voorwaarden</a>
+                        <label for="terms" class="ml-2 text-sm text-gray-700" data-i18n="auth.signup.terms">
+                            I agree to the terms of service
                         </label>
                     </div>
 
                     <!-- Submit Button -->
                     <button type="submit" id="submit-btn"
-                            class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Maak mijn account aan
+                            class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            data-i18n="auth.signup.submit">
+                        Create My Account
                     </button>
                 </form>
 
                 <!-- Login Link -->
                 <p class="mt-6 text-center text-sm text-gray-600">
-                    Heeft u al een account?
-                    <a href="/login" class="text-blue-600 hover:underline font-medium">Inloggen</a>
+                    <span data-i18n="auth.signup.have_account">Already have an account?</span>
+                    <a href="/login" class="text-blue-600 hover:underline font-medium" data-i18n="auth.signup.login_link">Log in</a>
                 </p>
             </div>
         </div>
@@ -206,15 +213,20 @@
                     errorText.textContent = data.error || 'Er is een fout opgetreden. Probeer het opnieuw.';
                     errorDiv.classList.remove('hidden');
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Maak mijn account aan';
+                    submitBtn.textContent = i18next.t('auth.signup.submit');
                 }
             } catch (error) {
                 console.error('Signup error:', error);
                 errorText.textContent = 'Er is een fout opgetreden. Controleer uw internetverbinding en probeer opnieuw.';
                 errorDiv.classList.remove('hidden');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Maak mijn account aan';
+                submitBtn.textContent = i18next.t('auth.signup.submit');
             }
+        });
+
+        // Initialize i18next when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initI18n();
         });
     </script>
 </body>

@@ -1,0 +1,268 @@
+{
+  "nav": {
+    "home": "Home",
+    "pricing": "Pricing",
+    "login": "Login",
+    "signup": "Get Started",
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "hero": {
+    "title": "Your AI Solution",
+    "subtitle": "AI that answers calls and messages for your business 24/7",
+    "description": "Never miss a customer again. Our AI receptionist handles inquiries, schedules appointments, and provides information about your business around the clock in multiple languages.",
+    "cta_trial": "Start Free Trial",
+    "cta_pricing": "View Pricing",
+    "trial_note": "7 days free • No credit card required"
+  },
+  "features": {
+    "title": "Why Choose Your AI Solution?",
+    "chat": {
+      "title": "AI Web Chat",
+      "description": "Integrate AI chat on your website"
+    },
+    "phone": {
+      "title": "Phone Receptionist",
+      "description": "Answer calls automatically 24/7"
+    },
+    "multilingual": {
+      "title": "Multilingual",
+      "description": "Supports multiple languages"
+    },
+    "appointments": {
+      "title": "Appointment Booking",
+      "description": "Schedule appointments automatically"
+    }
+  },
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Start with a 7-day free trial. No credit card required.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearly_save": "(Save 2 months!)",
+    "per_month": "/month",
+    "most_popular": "Most Popular",
+    "start_trial": "Start Free Trial",
+    "starter": {
+      "name": "Starter",
+      "price": "€69",
+      "features": [
+        "AI web chat widget for your website",
+        "Up to 300 conversations per month",
+        "Daily email summary",
+        "Email support"
+      ]
+    },
+    "professional": {
+      "name": "Professional",
+      "price": "€129",
+      "features": [
+        "Everything in Starter",
+        "AI phone receptionist",
+        "Appointment booking",
+        "Call transfer to your phone",
+        "Real-time SMS notifications",
+        "Up to 1000 conversations per month",
+        "Priority support"
+      ]
+    },
+    "business": {
+      "name": "Business",
+      "price": "€199",
+      "features": [
+        "Everything in Professional",
+        "WhatsApp integration (Coming soon)",
+        "Multiple phone numbers",
+        "Custom AI voice and personality",
+        "Up to 3000 conversations per month",
+        "Dedicated account manager"
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": {
+        "question": "Can I keep my existing phone number?",
+        "answer": "Yes, absolutely! You simply set up call forwarding from your current number to our AI number. Your customers still call your familiar number."
+      },
+      "q2": {
+        "question": "How does the free trial work?",
+        "answer": "You get 7 days of free access to all features of your chosen package. No credit card needed at signup. After the trial, you can choose whether to continue."
+      },
+      "q3": {
+        "question": "Can I switch plans later?",
+        "answer": "Yes, you can upgrade or downgrade at any time. Upgrades take effect immediately. Downgrades take effect at the end of your current billing period."
+      },
+      "q4": {
+        "question": "What happens if I exceed my conversation limit?",
+        "answer": "We'll notify you when you reach 80% of your limit. If you exceed it, you can upgrade or conversations continue at €0.15 each. The service keeps working."
+      },
+      "q5": {
+        "question": "Is there a contract?",
+        "answer": "No contract. You can cancel anytime with no fees. With monthly billing, the service stops at the end of your paid period."
+      },
+      "q6": {
+        "question": "What languages does the AI speak?",
+        "answer": "Currently Dutch and English. The AI automatically detects the customer's language and responds in the same language. More languages coming soon."
+      }
+    }
+  },
+  "auth": {
+    "signup": {
+      "title": "Create an Account",
+      "subtitle": "Start your 7-day free trial",
+      "business_name": "Business Name",
+      "email": "Email Address",
+      "password": "Password",
+      "password_min": "Minimum 8 characters",
+      "confirm_password": "Confirm Password",
+      "confirm_password_placeholder": "Repeat your password",
+      "plan": "Choose Your Package",
+      "terms": "I agree to the terms of service",
+      "submit": "Create My Account",
+      "have_account": "Already have an account?",
+      "login_link": "Log in"
+    },
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Log in to your account",
+      "email": "Email Address",
+      "password": "Password",
+      "remember": "Remember me",
+      "forgot_password": "Forgot password?",
+      "submit": "Log In",
+      "no_account": "Don't have an account?",
+      "signup_link": "Sign up"
+    }
+  },
+  "setup": {
+    "progress": "Step {{current}} of {{total}}",
+    "next": "Next",
+    "back": "Previous",
+    "step1": {
+      "title": "Business Details",
+      "subtitle": "Tell us about your business",
+      "business_name": "Business Name",
+      "business_type": "Business Type",
+      "select_type": "Select type...",
+      "types": {
+        "restaurant": "Restaurant",
+        "hair_salon": "Hair Salon",
+        "barber": "Barber",
+        "dental_clinic": "Dental Clinic",
+        "physiotherapy": "Physiotherapy",
+        "auto_repair": "Auto Repair",
+        "beauty_salon": "Beauty Salon",
+        "retail_shop": "Retail Shop",
+        "other": "Other"
+      },
+      "address": "Address",
+      "website": "Website (optional)",
+      "owner_phone": "Owner Phone Number",
+      "owner_phone_help": "For call transfers and notifications"
+    },
+    "step2": {
+      "title": "Services and Information",
+      "subtitle": "What should your AI receptionist know?",
+      "description": "Description of services and prices",
+      "description_placeholder": "Describe your services, menu, prices, FAQs and other important information...",
+      "fill_example": "Fill example",
+      "opening_hours": "Opening Hours",
+      "languages": "Languages",
+      "dutch": "Dutch",
+      "english": "English"
+    },
+    "step3": {
+      "title": "Special Rules",
+      "subtitle": "Are there specific guidelines your AI should follow?",
+      "special_rules": "Special rules and exceptions (optional)",
+      "special_rules_placeholder": "For example: 'No deliveries after 21:30' or 'Tom only does color treatments'",
+      "greeting": "Greeting (optional)",
+      "greeting_placeholder": "Leave empty for default greeting",
+      "backup_phone": "Backup phone number (optional)",
+      "backup_phone_help": "For call transfers (can be same as owner number)"
+    },
+    "step4": {
+      "title": "Connection Method",
+      "subtitle": "How do you want to make your AI receptionist available?",
+      "option_forward": "Forward my existing business number (recommended)",
+      "option_forward_desc": "Keep your current number. Just set up call forwarding to our AI number.",
+      "option_new": "Get a new number",
+      "option_new_desc": "We'll assign you a Dutch phone number you can put on your website and business cards.",
+      "forward_to": "Forward your number to:",
+      "instructions": "Set up call forwarding:",
+      "new_number_info": "Our team will assign your number within 24 hours. You'll receive an email once your number is ready."
+    },
+    "step5": {
+      "title": "Review and Activate",
+      "subtitle": "Check your information before activating",
+      "business_info": "Business Information",
+      "services": "Services",
+      "connection": "Connection",
+      "languages_label": "Languages:",
+      "hours_label": "Opening Hours:",
+      "edit": "Edit",
+      "ready_title": "Ready to get started?",
+      "ready_desc": "After you activate your AI receptionist, you can immediately start receiving calls and chats. You can adjust all settings later via your dashboard.",
+      "activate": "Activate My AI Receptionist"
+    }
+  },
+  "common": {
+    "required": "Required",
+    "optional": "Optional",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "contact_support": "Contact us at info@youraisolution.nl for help"
+  },
+  "demo": {
+    "cta_title": "Want this for your business?",
+    "cta_subtitle": "Start today with 7 days free - no credit card required!",
+    "cta_button": "Create Free Account",
+    "title": "Quick Test Demo",
+    "subtitle": "Fill in your business details and test how the AI handles customer questions",
+    "disclaimer": "<strong>Note:</strong> This is for testing only. <a href=\"/signup\" class=\"text-purple-600 hover:underline font-semibold\">Create an account</a> for full access and your own phone number.",
+    "business_name": "Business Name",
+    "business_name_placeholder": "e.g., Bella's Italian Restaurant",
+    "business_type": "Business Type",
+    "business_type_select": "Select a type...",
+    "business_types": {
+      "restaurant": "Restaurant",
+      "salon": "Salon",
+      "clinic": "Clinic",
+      "shop": "Shop",
+      "other": "Other"
+    },
+    "business_description": "Business Description",
+    "business_description_placeholder": "Describe your menu, services, prices, specialties, etc. The more details, the better the AI can help your customers!",
+    "opening_hours": "Opening Hours",
+    "opening_hours_placeholder": "e.g., Monday-Friday: 9am-6pm, Saturday: 10am-4pm, Sunday: Closed",
+    "languages": "Languages",
+    "language_dutch": "Dutch",
+    "language_english": "English",
+    "special_rules": "Special Rules or Instructions",
+    "special_rules_placeholder": "e.g., Don't take bookings on Sundays, Ask for dietary restrictions, Always mention our loyalty program",
+    "submit_button": "Start Testing Your AI Receptionist",
+    "chat": {
+      "title": "Test Your AI Receptionist",
+      "subtitle": "Ask questions as if you're a customer!",
+      "greeting": "Hello! I'm the AI receptionist for <span id=\"business-name-display\" class=\"font-semibold\"></span>. How can I help you today?",
+      "input_placeholder": "Type your message...",
+      "send_button": "Send",
+      "reset_button": "← Start Over with New Business",
+      "phone_trial_button": "Try a Phone Call with Your AI Agent"
+    },
+    "phone": {
+      "title": "Call Your AI Agent Now!",
+      "subtitle": "Dial the number below to speak with your AI receptionist for",
+      "call_label": "Call this number:",
+      "trial_note": "<strong>Free Trial:</strong> 3 minutes maximum per phone number",
+      "instructions": "The AI will answer as your business receptionist. Ask questions about services, hours, pricing, or anything else!",
+      "back_button": "← Back to Chat"
+    }
+  }
+}

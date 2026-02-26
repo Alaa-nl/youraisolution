@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "pricing": "Precios",
+    "login": "Iniciar Sesión",
+    "signup": "Comenzar Gratis",
+    "dashboard": "Panel",
+    "logout": "Cerrar Sesión"
+  },
+  "hero": {
+    "title": "Your AI Solution",
+    "subtitle": "IA que responde llamadas y mensajes para su negocio 24/7",
+    "description": "Nunca más pierda un cliente. Nuestra recepcionista de IA maneja consultas, programa citas y proporciona información sobre su negocio las 24 horas en múltiples idiomas.",
+    "cta_trial": "Comenzar Prueba Gratuita",
+    "cta_pricing": "Ver Precios",
+    "trial_note": "7 días gratis • Sin tarjeta de crédito requerida"
+  },
+  "pricing": {
+    "title": "Precios Simples y Transparentes",
+    "subtitle": "Comience con una prueba gratuita de 7 días. Sin tarjeta de crédito requerida.",
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "yearly_save": "(¡Ahorre 2 meses!)",
+    "per_month": "/mes",
+    "most_popular": "Más Popular",
+    "start_trial": "Comenzar Prueba Gratuita"
+  },
+  "auth": {
+    "signup": {
+      "title": "Crear una Cuenta",
+      "subtitle": "Comience su prueba gratuita de 7 días",
+      "business_name": "Nombre del Negocio",
+      "email": "Dirección de Correo",
+      "password": "Contraseña",
+      "submit": "Crear Mi Cuenta",
+      "have_account": "¿Ya tiene una cuenta?",
+      "login_link": "Iniciar Sesión"
+    },
+    "login": {
+      "title": "Bienvenido de Nuevo",
+      "subtitle": "Inicie sesión en su cuenta",
+      "submit": "Iniciar Sesión",
+      "no_account": "¿No tiene una cuenta?",
+      "signup_link": "Registrarse"
+    }
+  },
+  "common": {
+    "required": "Requerido",
+    "optional": "Opcional",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "¡Éxito!",
+    "edit": "Editar"
+  }
+}

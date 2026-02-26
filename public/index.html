@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your AI Solution - AI Receptionist for Your Business</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- i18next for multi-language support -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@21.9.1/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.4.4/i18nextHttpBackend.min.js"></script>
+    <script src="/js/i18n-config.js"></script>
     <style>
         .chat-messages {
             max-height: 400px;
@@ -37,11 +41,13 @@
                     <a href="/" class="text-xl font-bold text-purple-600">Your AI Solution</a>
                 </div>
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="/" class="text-gray-700 hover:text-purple-600 transition">Home</a>
-                    <a href="/pricing" class="text-gray-700 hover:text-purple-600 transition">Prijzen</a>
-                    <a href="/login" class="text-gray-700 hover:text-purple-600 transition">Inloggen</a>
-                    <a href="/signup" class="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition">
-                        Start Gratis
+                    <a href="/" class="text-gray-700 hover:text-purple-600 transition" data-i18n="nav.home">Home</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-purple-600 transition" data-i18n="nav.pricing">Pricing</a>
+                    <a href="/login" class="text-gray-700 hover:text-purple-600 transition" data-i18n="nav.login">Login</a>
+                    <!-- Language Switcher -->
+                    <div id="language-switcher"></div>
+                    <a href="/signup" class="bg-purple-600 text-white px-6 py-2 rounded-full hover:bg-purple-700 transition" data-i18n="nav.signup">
+                        Get Started
                     </a>
                 </div>
                 <!-- Mobile menu button -->
@@ -57,11 +63,11 @@
         <!-- Mobile menu -->
         <div id="mobile-menu" class="hidden md:hidden border-t">
             <div class="px-4 py-3 space-y-2">
-                <a href="/" class="block text-gray-700 hover:text-purple-600 py-2">Home</a>
-                <a href="/pricing" class="block text-gray-700 hover:text-purple-600 py-2">Prijzen</a>
-                <a href="/login" class="block text-gray-700 hover:text-purple-600 py-2">Inloggen</a>
-                <a href="/signup" class="block bg-purple-600 text-white px-4 py-2 rounded-lg text-center hover:bg-purple-700">
-                    Start Gratis
+                <a href="/" class="block text-gray-700 hover:text-purple-600 py-2" data-i18n="nav.home">Home</a>
+                <a href="/pricing" class="block text-gray-700 hover:text-purple-600 py-2" data-i18n="nav.pricing">Pricing</a>
+                <a href="/login" class="block text-gray-700 hover:text-purple-600 py-2" data-i18n="nav.login">Login</a>
+                <a href="/signup" class="block bg-purple-600 text-white px-4 py-2 rounded-lg text-center hover:bg-purple-700" data-i18n="nav.signup">
+                    Get Started
                 </a>
             </div>
         </div>
@@ -70,24 +76,22 @@
     <!-- Hero Section -->
     <section id="hero" class="gradient-bg text-white py-20 px-4">
         <div class="max-w-6xl mx-auto text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">Your AI Solution</h1>
-            <p class="text-xl md:text-2xl mb-8 opacity-90">
-                AI die 24/7 gesprekken en berichten beantwoordt voor uw bedrijf
+            <h1 class="text-4xl md:text-6xl font-bold mb-6" data-i18n="hero.title">Your AI Solution</h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-90" data-i18n="hero.subtitle">
+                AI that answers calls and messages for your business 24/7
             </p>
-            <p class="text-lg md:text-xl mb-10 max-w-3xl mx-auto">
-                Mis nooit meer een klant. Onze AI-receptionist behandelt vragen,
-                plant afspraken in en geeft informatie over uw bedrijf,
-                de klok rond in meerdere talen.
+            <p class="text-lg md:text-xl mb-10 max-w-3xl mx-auto" data-i18n="hero.description">
+                Never miss a customer again. Our AI receptionist handles inquiries, schedules appointments, and provides information about your business around the clock in multiple languages.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="/signup" class="bg-white text-purple-600 font-bold py-4 px-8 rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
-                    Start Gratis Proefperiode
+                <a href="/signup" class="bg-white text-purple-600 font-bold py-4 px-8 rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg" data-i18n="hero.cta_trial">
+                    Start Free Trial
                 </a>
-                <a href="/pricing" class="bg-transparent border-2 border-white text-white font-bold py-4 px-8 rounded-full hover:bg-white hover:text-purple-600 transition-all">
-                    Bekijk Prijzen
+                <a href="/pricing" class="bg-transparent border-2 border-white text-white font-bold py-4 px-8 rounded-full hover:bg-white hover:text-purple-600 transition-all" data-i18n="hero.cta_pricing">
+                    View Pricing
                 </a>
             </div>
-            <p class="mt-6 text-sm opacity-75">7 dagen gratis • Geen creditcard nodig</p>
+            <p class="mt-6 text-sm opacity-75" data-i18n="hero.trial_note">7 days free • No credit card required</p>
         </div>
     </section>
 
@@ -96,30 +100,30 @@
         <div class="max-w-3xl mx-auto">
             <!-- CTA Banner -->
             <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl p-6 mb-8 text-center">
-                <h3 class="text-2xl font-bold mb-2">Wilt u dit voor uw bedrijf?</h3>
-                <p class="mb-4">Start vandaag nog met 7 dagen gratis - geen creditcard nodig!</p>
-                <a href="/signup" class="inline-block bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition">
-                    Maak Gratis Account Aan
+                <h3 class="text-2xl font-bold mb-2" data-i18n="demo.cta_title">Want this for your business?</h3>
+                <p class="mb-4" data-i18n="demo.cta_subtitle">Start today with 7 days free - no credit card required!</p>
+                <a href="/signup" class="inline-block bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition" data-i18n="demo.cta_button">
+                    Create Free Account
                 </a>
             </div>
 
             <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center">
-                    Snelle Testdemo
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center" data-i18n="demo.title">
+                    Quick Test Demo
                 </h2>
-                <p class="text-gray-600 mb-8 text-center">
-                    Vul uw bedrijfsgegevens in en test hoe de AI klantvragen afhandelt
+                <p class="text-gray-600 mb-8 text-center" data-i18n="demo.subtitle">
+                    Fill in your business details and test how the AI handles customer questions
                 </p>
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <p class="text-sm text-gray-700 text-center">
-                        <strong>Let op:</strong> Dit is alleen voor testen. <a href="/signup" class="text-purple-600 hover:underline font-semibold">Maak een account</a> voor volledige toegang en uw eigen telefoonnummer.
+                    <p class="text-sm text-gray-700 text-center" data-i18n-html="demo.disclaimer">
+                        <strong>Note:</strong> This is for testing only. <a href="/signup" class="text-purple-600 hover:underline font-semibold">Create an account</a> for full access and your own phone number.
                     </p>
                 </div>
 
                 <form id="business-form" class="space-y-6">
                     <!-- Business Name -->
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">
+                        <label class="block text-gray-700 font-semibold mb-2" data-i18n="demo.business_name">
                             Business Name *
                         </label>
                         <input
@@ -127,13 +131,13 @@
                             name="businessName"
                             required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
-                            placeholder="e.g., Bella's Italian Restaurant"
+                            data-i18n-placeholder="demo.business_name_placeholder"
                         >
                     </div>
 
                     <!-- Business Type -->
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">
+                        <label class="block text-gray-700 font-semibold mb-2" data-i18n="demo.business_type">
                             Business Type *
                         </label>
                         <select
@@ -141,18 +145,18 @@
                             required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
                         >
-                            <option value="">Select a type...</option>
-                            <option value="restaurant">Restaurant</option>
-                            <option value="salon">Salon</option>
-                            <option value="clinic">Clinic</option>
-                            <option value="shop">Shop</option>
-                            <option value="other">Other</option>
+                            <option value="" data-i18n="demo.business_type_select">Select a type...</option>
+                            <option value="restaurant" data-i18n="demo.business_types.restaurant">Restaurant</option>
+                            <option value="salon" data-i18n="demo.business_types.salon">Salon</option>
+                            <option value="clinic" data-i18n="demo.business_types.clinic">Clinic</option>
+                            <option value="shop" data-i18n="demo.business_types.shop">Shop</option>
+                            <option value="other" data-i18n="demo.business_types.other">Other</option>
                         </select>
                     </div>
 
                     <!-- Business Description -->
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">
+                        <label class="block text-gray-700 font-semibold mb-2" data-i18n="demo.business_description">
                             Business Description *
                         </label>
                         <textarea
@@ -160,13 +164,13 @@
                             required
                             rows="4"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"
-                            placeholder="Describe your menu, services, prices, specialties, etc. The more details, the better the AI can help your customers!"
+                            data-i18n-placeholder="demo.business_description_placeholder"
                         ></textarea>
                     </div>
 
                     <!-- Opening Hours -->
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">
+                        <label class="block text-gray-700 font-semibold mb-2" data-i18n="demo.opening_hours">
                             Opening Hours *
                         </label>
                         <textarea
@@ -174,37 +178,37 @@
                             required
                             rows="3"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"
-                            placeholder="e.g., Monday-Friday: 9am-6pm, Saturday: 10am-4pm, Sunday: Closed"
+                            data-i18n-placeholder="demo.opening_hours_placeholder"
                         ></textarea>
                     </div>
 
                     <!-- Languages -->
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">
+                        <label class="block text-gray-700 font-semibold mb-2" data-i18n="demo.languages">
                             Languages *
                         </label>
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3">
                                 <input type="checkbox" name="languages" value="Dutch" class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-2 focus:ring-purple-500">
-                                <span class="text-gray-700">Dutch</span>
+                                <span class="text-gray-700" data-i18n="demo.language_dutch">Dutch</span>
                             </label>
                             <label class="flex items-center space-x-3">
                                 <input type="checkbox" name="languages" value="English" class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-2 focus:ring-purple-500">
-                                <span class="text-gray-700">English</span>
+                                <span class="text-gray-700" data-i18n="demo.language_english">English</span>
                             </label>
                         </div>
                     </div>
 
                     <!-- Special Rules -->
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">
+                        <label class="block text-gray-700 font-semibold mb-2" data-i18n="demo.special_rules">
                             Special Rules or Instructions
                         </label>
                         <textarea
                             name="specialRules"
                             rows="3"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"
-                            placeholder="e.g., Don't take bookings on Sundays, Ask for dietary restrictions, Always mention our loyalty program"
+                            data-i18n-placeholder="demo.special_rules_placeholder"
                         ></textarea>
                     </div>
 
@@ -212,6 +216,7 @@
                     <button
                         type="submit"
                         class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-bold py-4 px-8 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all transform hover:scale-[1.02] shadow-lg"
+                        data-i18n="demo.submit_button"
                     >
                         Start Testing Your AI Receptionist
                     </button>
@@ -226,8 +231,8 @@
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
                 <!-- Chat Header -->
                 <div class="gradient-bg text-white p-6">
-                    <h3 class="text-2xl font-bold mb-2">Test Your AI Receptionist</h3>
-                    <p class="opacity-90">Ask questions as if you're a customer!</p>
+                    <h3 class="text-2xl font-bold mb-2" data-i18n="demo.chat.title">Test Your AI Receptionist</h3>
+                    <p class="opacity-90" data-i18n="demo.chat.subtitle">Ask questions as if you're a customer!</p>
                 </div>
 
                 <!-- Chat Messages -->
@@ -251,13 +256,14 @@
                         <input
                             type="text"
                             id="user-message"
-                            placeholder="Type your message..."
                             class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
                             required
+                            data-i18n-placeholder="demo.chat.input_placeholder"
                         >
                         <button
                             type="submit"
                             class="bg-purple-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-purple-700 transition-all"
+                            data-i18n="demo.chat.send_button"
                         >
                             Send
                         </button>
@@ -265,6 +271,7 @@
                     <button
                         onclick="resetDemo()"
                         class="mt-4 text-purple-600 hover:text-purple-700 font-semibold"
+                        data-i18n="demo.chat.reset_button"
                     >
                         ← Start Over with New Business
                     </button>
@@ -277,7 +284,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                             </svg>
-                            <span>Try a Phone Call with Your AI Agent</span>
+                            <span data-i18n="demo.chat.phone_trial_button">Try a Phone Call with Your AI Agent</span>
                         </button>
                     </div>
                 </div>
@@ -294,27 +301,28 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                 </div>
-                <h3 class="text-3xl font-bold text-gray-800 mb-4">Call Your AI Agent Now!</h3>
+                <h3 class="text-3xl font-bold text-gray-800 mb-4" data-i18n="demo.phone.title">Call Your AI Agent Now!</h3>
                 <p class="text-gray-600 mb-6">
-                    Dial the number below to speak with your AI receptionist for <span id="phone-business-name" class="font-semibold"></span>
+                    <span data-i18n="demo.phone.subtitle">Dial the number below to speak with your AI receptionist for</span> <span id="phone-business-name" class="font-semibold"></span>
                 </p>
                 <div class="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-6 mb-6">
-                    <p class="text-gray-700 font-semibold mb-2">Call this number:</p>
-                    <p id="display-phone-number" class="text-4xl md:text-5xl font-bold text-green-700 tracking-wider">
+                    <p class="text-gray-700 font-semibold mb-2" data-i18n="demo.phone.call_label">Call this number:</p>
+                    <p id="display-phone-number" class="text-4xl md:text-5xl font-bold text-green-700 tracking-wider" data-i18n="common.loading">
                         Loading...
                     </p>
                 </div>
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                    <p class="text-sm text-gray-700">
+                    <p class="text-sm text-gray-700" data-i18n-html="demo.phone.trial_note">
                         <strong>Free Trial:</strong> 3 minutes maximum per phone number
                     </p>
                 </div>
-                <p class="text-gray-600 text-sm mb-6">
+                <p class="text-gray-600 text-sm mb-6" data-i18n="demo.phone.instructions">
                     The AI will answer as your business receptionist. Ask questions about services, hours, pricing, or anything else!
                 </p>
                 <button
                     onclick="hidePhoneNumber()"
                     class="text-gray-600 hover:text-gray-800 font-semibold"
+                    data-i18n="demo.phone.back_button"
                 >
                     ← Back to Chat
                 </button>
@@ -531,6 +539,11 @@
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
         }
+
+        // Initialize i18next when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initI18n();
+        });
     </script>
 </body>
 </html>

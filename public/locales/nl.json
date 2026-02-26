@@ -1,0 +1,268 @@
+{
+  "nav": {
+    "home": "Home",
+    "pricing": "Prijzen",
+    "login": "Inloggen",
+    "signup": "Start Gratis",
+    "dashboard": "Dashboard",
+    "logout": "Uitloggen"
+  },
+  "hero": {
+    "title": "Your AI Solution",
+    "subtitle": "AI die 24/7 gesprekken en berichten beantwoordt voor uw bedrijf",
+    "description": "Mis nooit meer een klant. Onze AI-receptionist behandelt vragen, plant afspraken in en geeft informatie over uw bedrijf, de klok rond in meerdere talen.",
+    "cta_trial": "Start Gratis Proefperiode",
+    "cta_pricing": "Bekijk Prijzen",
+    "trial_note": "7 dagen gratis • Geen creditcard nodig"
+  },
+  "features": {
+    "title": "Waarom Kiezen voor Your AI Solution?",
+    "chat": {
+      "title": "AI Webchat",
+      "description": "Integreer AI-chat op uw website"
+    },
+    "phone": {
+      "title": "Telefoonreceptionist",
+      "description": "Beantwoord gesprekken automatisch 24/7"
+    },
+    "multilingual": {
+      "title": "Meertalig",
+      "description": "Ondersteunt meerdere talen"
+    },
+    "appointments": {
+      "title": "Afspraken Inplannen",
+      "description": "Plan afspraken automatisch in"
+    }
+  },
+  "pricing": {
+    "title": "Eenvoudige, Transparante Prijzen",
+    "subtitle": "Begin met een gratis proefperiode van 7 dagen. Geen creditcard vereist.",
+    "monthly": "Maandelijks",
+    "yearly": "Jaarlijks",
+    "yearly_save": "(2 maanden gratis!)",
+    "per_month": "/maand",
+    "most_popular": "Meest Populair",
+    "start_trial": "Start Gratis Proefperiode",
+    "starter": {
+      "name": "Starter",
+      "price": "€69",
+      "features": [
+        "AI webchat widget voor uw website",
+        "Tot 300 gesprekken per maand",
+        "Dagelijkse email samenvatting",
+        "Email ondersteuning"
+      ]
+    },
+    "professional": {
+      "name": "Professional",
+      "price": "€129",
+      "features": [
+        "Alles van Starter",
+        "AI telefoon receptionist",
+        "Afspraken inplannen",
+        "Gesprek doorschakelen naar uw telefoon",
+        "Real-time SMS notificaties",
+        "Tot 1000 gesprekken per maand",
+        "Prioriteit ondersteuning"
+      ]
+    },
+    "business": {
+      "name": "Business",
+      "price": "€199",
+      "features": [
+        "Alles van Professional",
+        "WhatsApp integratie (Binnenkort)",
+        "Meerdere telefoonnummers",
+        "Aangepaste AI stem en persoonlijkheid",
+        "Tot 3000 gesprekken per maand",
+        "Persoonlijke accountmanager"
+      ]
+    },
+    "faq": {
+      "title": "Veelgestelde Vragen",
+      "q1": {
+        "question": "Kan ik mijn bestaande telefoonnummer behouden?",
+        "answer": "Ja, absoluut! U stelt gewoon doorschakeling in van uw huidige nummer naar ons AI-nummer. Uw klanten bellen nog steeds uw bekende nummer."
+      },
+      "q2": {
+        "question": "Hoe werkt de gratis proefperiode?",
+        "answer": "U krijgt 7 dagen gratis toegang tot alle functies van uw gekozen pakket. Geen creditcard nodig bij aanmelding. Na de proefperiode kunt u kiezen of u wilt doorgaan."
+      },
+      "q3": {
+        "question": "Kan ik later van pakket wisselen?",
+        "answer": "Ja, u kunt op elk moment upgraden of downgraden. Bij een upgrade krijgt u direct toegang tot de extra functies. Bij een downgrade gaat de wijziging in aan het einde van uw huidige factuurperiode."
+      },
+      "q4": {
+        "question": "Wat gebeurt er als ik mijn gespreksenlimiet overschrijd?",
+        "answer": "We sturen u een melding wanneer u 80% van uw limiet bereikt. Als u de limiet overschrijdt, kunt u upgraden of gesprekken gaan verder tegen €0,15 per stuk. De service blijft gewoon werken."
+      },
+      "q5": {
+        "question": "Zit ik vast aan een contract?",
+        "answer": "Nee, er is geen contract. U kunt op elk moment opzeggen zonder extra kosten. Bij maandelijkse betaling stopt de service aan het einde van uw betaalde periode."
+      },
+      "q6": {
+        "question": "Welke talen spreekt de AI?",
+        "answer": "Op dit moment Nederlands en Engels. De AI herkent automatisch de taal van de klant en antwoordt in dezelfde taal. Meer talen komen binnenkort beschikbaar."
+      }
+    }
+  },
+  "auth": {
+    "signup": {
+      "title": "Maak een Account Aan",
+      "subtitle": "Start uw gratis proefperiode van 7 dagen",
+      "business_name": "Bedrijfsnaam",
+      "email": "Email Adres",
+      "password": "Wachtwoord",
+      "password_min": "Minimaal 8 karakters",
+      "confirm_password": "Bevestig Wachtwoord",
+      "confirm_password_placeholder": "Herhaal uw wachtwoord",
+      "plan": "Kies Uw Pakket",
+      "terms": "Ik ga akkoord met de algemene voorwaarden",
+      "submit": "Maak Mijn Account Aan",
+      "have_account": "Heeft u al een account?",
+      "login_link": "Inloggen"
+    },
+    "login": {
+      "title": "Welkom Terug",
+      "subtitle": "Log in op uw account",
+      "email": "Email Adres",
+      "password": "Wachtwoord",
+      "remember": "Onthoud mij",
+      "forgot_password": "Wachtwoord vergeten?",
+      "submit": "Inloggen",
+      "no_account": "Heeft u nog geen account?",
+      "signup_link": "Registreren"
+    }
+  },
+  "setup": {
+    "progress": "Stap {{current}} van {{total}}",
+    "next": "Volgende",
+    "back": "Vorige",
+    "step1": {
+      "title": "Bedrijfsgegevens",
+      "subtitle": "Vertel ons over uw bedrijf",
+      "business_name": "Bedrijfsnaam",
+      "business_type": "Bedrijfstype",
+      "select_type": "Selecteer type...",
+      "types": {
+        "restaurant": "Restaurant",
+        "hair_salon": "Kapsalon",
+        "barber": "Barbier",
+        "dental_clinic": "Tandartskliniek",
+        "physiotherapy": "Fysiotherapie",
+        "auto_repair": "Autogarage",
+        "beauty_salon": "Schoonheidssalon",
+        "retail_shop": "Winkel",
+        "other": "Overig"
+      },
+      "address": "Adres",
+      "website": "Website (optioneel)",
+      "owner_phone": "Telefoonnummer Eigenaar",
+      "owner_phone_help": "Voor doorschakelen en notificaties"
+    },
+    "step2": {
+      "title": "Diensten en Informatie",
+      "subtitle": "Wat moet uw AI receptionist weten?",
+      "description": "Beschrijving diensten en prijzen",
+      "description_placeholder": "Beschrijf uw diensten, menu, prijzen, veelgestelde vragen en andere belangrijke informatie...",
+      "fill_example": "Vul voorbeeldtekst in",
+      "opening_hours": "Openingstijden",
+      "languages": "Talen",
+      "dutch": "Nederlands",
+      "english": "Engels"
+    },
+    "step3": {
+      "title": "Speciale Regels",
+      "subtitle": "Zijn er specifieke richtlijnen die uw AI moet volgen?",
+      "special_rules": "Speciale regels en uitzonderingen (optioneel)",
+      "special_rules_placeholder": "Bijvoorbeeld: 'Geen leveringen na 21:30' of 'Tom doet alleen kleurbehandelingen'",
+      "greeting": "Begroeting (optioneel)",
+      "greeting_placeholder": "Laat leeg voor standaard begroeting",
+      "backup_phone": "Backup telefoonnummer (optioneel)",
+      "backup_phone_help": "Voor het doorschakelen van gesprekken (kan hetzelfde zijn als eigenaar nummer)"
+    },
+    "step4": {
+      "title": "Verbindingsmethode",
+      "subtitle": "Hoe wilt u uw AI receptionist bereikbaar maken?",
+      "option_forward": "Doorschakelen van bestaand nummer (aanbevolen)",
+      "option_forward_desc": "Behoud uw huidige bedrijfsnummer. Stel gewoon doorschakeling in naar ons AI-nummer.",
+      "option_new": "Nieuw nummer aanvragen",
+      "option_new_desc": "Wij wijzen u een Nederlands telefoonnummer toe dat u op uw website en visitekaartjes kunt plaatsen.",
+      "forward_to": "Schakel uw nummer door naar:",
+      "instructions": "Doorschakeling instellen:",
+      "new_number_info": "Ons team wijst binnen 24 uur een telefoonnummer aan u toe. U ontvangt een e-mail zodra uw nummer klaar is."
+    },
+    "step5": {
+      "title": "Controleer en Activeer",
+      "subtitle": "Controleer uw gegevens voordat u activeert",
+      "business_info": "Bedrijfsinformatie",
+      "services": "Diensten",
+      "connection": "Verbinding",
+      "languages_label": "Talen:",
+      "hours_label": "Openingstijden:",
+      "edit": "Bewerken",
+      "ready_title": "Klaar om te beginnen?",
+      "ready_desc": "Nadat u uw AI receptionist activeert, kunt u direct beginnen met het ontvangen van gesprekken en chats. U kunt alle instellingen later aanpassen via uw dashboard.",
+      "activate": "Activeer Mijn AI Receptionist"
+    }
+  },
+  "common": {
+    "required": "Verplicht",
+    "optional": "Optioneel",
+    "loading": "Laden...",
+    "error": "Er is een fout opgetreden",
+    "success": "Gelukt!",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "contact_support": "Neem contact op met info@youraisolution.nl voor hulp"
+  },
+  "demo": {
+    "cta_title": "Wilt u dit voor uw bedrijf?",
+    "cta_subtitle": "Start vandaag nog met 7 dagen gratis - geen creditcard nodig!",
+    "cta_button": "Maak Gratis Account Aan",
+    "title": "Snelle Testdemo",
+    "subtitle": "Vul uw bedrijfsgegevens in en test hoe de AI klantvragen afhandelt",
+    "disclaimer": "<strong>Let op:</strong> Dit is alleen voor testen. <a href=\"/signup\" class=\"text-purple-600 hover:underline font-semibold\">Maak een account</a> voor volledige toegang en uw eigen telefoonnummer.",
+    "business_name": "Bedrijfsnaam",
+    "business_name_placeholder": "bijv. Bella's Italiaans Restaurant",
+    "business_type": "Bedrijfstype",
+    "business_type_select": "Selecteer een type...",
+    "business_types": {
+      "restaurant": "Restaurant",
+      "salon": "Salon",
+      "clinic": "Kliniek",
+      "shop": "Winkel",
+      "other": "Overig"
+    },
+    "business_description": "Bedrijfsomschrijving",
+    "business_description_placeholder": "Beschrijf uw menu, diensten, prijzen, specialiteiten, enz. Hoe meer details, hoe beter de AI uw klanten kan helpen!",
+    "opening_hours": "Openingstijden",
+    "opening_hours_placeholder": "bijv. Maandag-Vrijdag: 9:00-18:00, Zaterdag: 10:00-16:00, Zondag: Gesloten",
+    "languages": "Talen",
+    "language_dutch": "Nederlands",
+    "language_english": "Engels",
+    "special_rules": "Speciale Regels of Instructies",
+    "special_rules_placeholder": "bijv. Geen boekingen op zondag, Vraag naar dieetwensen, Vermeld altijd ons loyaliteitsprogramma",
+    "submit_button": "Start Test van Uw AI Receptionist",
+    "chat": {
+      "title": "Test Uw AI Receptionist",
+      "subtitle": "Stel vragen alsof u een klant bent!",
+      "greeting": "Hallo! Ik ben de AI receptionist voor <span id=\"business-name-display\" class=\"font-semibold\"></span>. Hoe kan ik u helpen?",
+      "input_placeholder": "Typ uw bericht...",
+      "send_button": "Verstuur",
+      "reset_button": "← Opnieuw Beginnen met Nieuw Bedrijf",
+      "phone_trial_button": "Probeer een Telefoongesprek met Uw AI Agent"
+    },
+    "phone": {
+      "title": "Bel Nu Uw AI Agent!",
+      "subtitle": "Bel het onderstaande nummer om te praten met uw AI receptionist voor",
+      "call_label": "Bel dit nummer:",
+      "trial_note": "<strong>Gratis Proefperiode:</strong> Maximaal 3 minuten per telefoonnummer",
+      "instructions": "De AI zal antwoorden als uw bedrijfsreceptionist. Stel vragen over diensten, openingstijden, prijzen, of iets anders!",
+      "back_button": "← Terug naar Chat"
+    }
+  }
+}

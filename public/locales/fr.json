@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "pricing": "Tarifs",
+    "login": "Connexion",
+    "signup": "Commencer Gratuitement",
+    "dashboard": "Tableau de Bord",
+    "logout": "Déconnexion"
+  },
+  "hero": {
+    "title": "Your AI Solution",
+    "subtitle": "IA qui répond aux appels et messages pour votre entreprise 24/7",
+    "description": "Ne manquez plus jamais un client. Notre réceptionniste IA gère les demandes, planifie les rendez-vous et fournit des informations sur votre entreprise 24h/24 dans plusieurs langues.",
+    "cta_trial": "Démarrer l'Essai Gratuit",
+    "cta_pricing": "Voir les Tarifs",
+    "trial_note": "7 jours gratuits • Aucune carte de crédit requise"
+  },
+  "pricing": {
+    "title": "Tarification Simple et Transparente",
+    "subtitle": "Commencez avec un essai gratuit de 7 jours. Aucune carte de crédit requise.",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "yearly_save": "(Économisez 2 mois!)",
+    "per_month": "/mois",
+    "most_popular": "Le Plus Populaire",
+    "start_trial": "Démarrer l'Essai Gratuit"
+  },
+  "auth": {
+    "signup": {
+      "title": "Créer un Compte",
+      "subtitle": "Commencez votre essai gratuit de 7 jours",
+      "business_name": "Nom de l'Entreprise",
+      "email": "Adresse E-mail",
+      "password": "Mot de Passe",
+      "submit": "Créer Mon Compte",
+      "have_account": "Vous avez déjà un compte?",
+      "login_link": "Se Connecter"
+    },
+    "login": {
+      "title": "Bon Retour",
+      "subtitle": "Connectez-vous à votre compte",
+      "submit": "Se Connecter",
+      "no_account": "Vous n'avez pas de compte?",
+      "signup_link": "S'inscrire"
+    }
+  },
+  "common": {
+    "required": "Requis",
+    "optional": "Optionnel",
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès!",
+    "edit": "Modifier"
+  }
+}

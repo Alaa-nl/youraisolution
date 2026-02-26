@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "pricing": "Preise",
+    "login": "Anmelden",
+    "signup": "Kostenlos Starten",
+    "dashboard": "Dashboard",
+    "logout": "Abmelden"
+  },
+  "hero": {
+    "title": "Your AI Solution",
+    "subtitle": "KI, die rund um die Uhr Anrufe und Nachrichten für Ihr Unternehmen beantwortet",
+    "description": "Verpassen Sie nie wieder einen Kunden. Unsere KI-Rezeption bearbeitet Anfragen, plant Termine und gibt rund um die Uhr Informationen über Ihr Unternehmen in mehreren Sprachen.",
+    "cta_trial": "Kostenlose Testversion Starten",
+    "cta_pricing": "Preise Ansehen",
+    "trial_note": "7 Tage kostenlos • Keine Kreditkarte erforderlich"
+  },
+  "pricing": {
+    "title": "Einfache, Transparente Preise",
+    "subtitle": "Beginnen Sie mit einer 7-tägigen kostenlosen Testversion. Keine Kreditkarte erforderlich.",
+    "monthly": "Monatlich",
+    "yearly": "Jährlich",
+    "yearly_save": "(2 Monate sparen!)",
+    "per_month": "/Monat",
+    "most_popular": "Am Beliebtesten",
+    "start_trial": "Kostenlose Testversion Starten"
+  },
+  "auth": {
+    "signup": {
+      "title": "Konto Erstellen",
+      "subtitle": "Starten Sie Ihre 7-tägige kostenlose Testversion",
+      "business_name": "Firmenname",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "submit": "Mein Konto Erstellen",
+      "have_account": "Haben Sie bereits ein Konto?",
+      "login_link": "Anmelden"
+    },
+    "login": {
+      "title": "Willkommen Zurück",
+      "subtitle": "Melden Sie sich bei Ihrem Konto an",
+      "submit": "Anmelden",
+      "no_account": "Noch kein Konto?",
+      "signup_link": "Registrieren"
+    }
+  },
+  "common": {
+    "required": "Erforderlich",
+    "optional": "Optional",
+    "loading": "Lädt...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolg!",
+    "edit": "Bearbeiten"
+  }
+}
