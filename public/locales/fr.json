@@ -15,6 +15,25 @@
     "cta_pricing": "Voir les Tarifs",
     "trial_note": "7 jours gratuits • Aucune carte de crédit requise"
   },
+  "features": {
+    "title": "Pourquoi Choisir Your AI Solution?",
+    "chat": {
+      "title": "Chat Web IA",
+      "description": "Intégrez le chat IA sur votre site web"
+    },
+    "phone": {
+      "title": "Réceptionniste Téléphonique",
+      "description": "Répondez aux appels automatiquement 24/7"
+    },
+    "multilingual": {
+      "title": "Multilingue",
+      "description": "Prend en charge plusieurs langues"
+    },
+    "appointments": {
+      "title": "Réservation de Rendez-vous",
+      "description": "Planifiez les rendez-vous automatiquement"
+    }
+  },
   "pricing": {
     "title": "Tarification Simple et Transparente",
     "subtitle": "Commencez avec un essai gratuit de 7 jours. Aucune carte de crédit requise.",
@@ -23,7 +42,69 @@
     "yearly_save": "(Économisez 2 mois!)",
     "per_month": "/mois",
     "most_popular": "Le Plus Populaire",
-    "start_trial": "Démarrer l'Essai Gratuit"
+    "start_trial": "Démarrer l'Essai Gratuit",
+    "starter": {
+      "name": "Starter",
+      "price": "€69",
+      "features": [
+        "Widget de chat web IA pour votre site",
+        "Jusqu'à 300 conversations par mois",
+        "Résumé quotidien par e-mail",
+        "Support par e-mail"
+      ]
+    },
+    "professional": {
+      "name": "Professional",
+      "price": "€129",
+      "features": [
+        "Tout de Starter",
+        "Réceptionniste téléphonique IA",
+        "Réservation de rendez-vous",
+        "Transfert d'appel vers votre téléphone",
+        "Notifications SMS en temps réel",
+        "Jusqu'à 1000 conversations par mois",
+        "Support prioritaire"
+      ]
+    },
+    "business": {
+      "name": "Business",
+      "price": "€199",
+      "features": [
+        "Tout de Professional",
+        "Intégration WhatsApp (Bientôt disponible)",
+        "Plusieurs numéros de téléphone",
+        "Voix et personnalité IA personnalisées",
+        "Jusqu'à 3000 conversations par mois",
+        "Gestionnaire de compte dédié"
+      ]
+    },
+    "faq": {
+      "title": "Questions Fréquemment Posées",
+      "q1": {
+        "question": "Puis-je conserver mon numéro de téléphone existant?",
+        "answer": "Oui, absolument! Vous configurez simplement le transfert d'appel de votre numéro actuel vers notre numéro IA. Vos clients appellent toujours votre numéro familier."
+      },
+      "q2": {
+        "question": "Comment fonctionne l'essai gratuit?",
+        "answer": "Vous obtenez 7 jours d'accès gratuit à toutes les fonctionnalités de votre forfait choisi. Aucune carte de crédit nécessaire à l'inscription. Après l'essai, vous pouvez choisir de continuer."
+      },
+      "q3": {
+        "question": "Puis-je changer de forfait plus tard?",
+        "answer": "Oui, vous pouvez mettre à niveau ou rétrograder à tout moment. Les mises à niveau prennent effet immédiatement. Les rétrogradations prennent effet à la fin de votre période de facturation actuelle."
+      },
+      "q4": {
+        "question": "Que se passe-t-il si je dépasse ma limite de conversations?",
+        "answer": "Nous vous préviendrons lorsque vous atteindrez 80% de votre limite. Si vous la dépassez, vous pouvez mettre à niveau ou les conversations continuent à €0,15 chacune. Le service continue de fonctionner."
+      },
+      "q5": {
+        "question": "Y a-t-il un contrat?",
+        "answer": "Aucun contrat. Vous pouvez annuler à tout moment sans frais. Avec la facturation mensuelle, le service s'arrête à la fin de votre période payée."
+      },
+      "q6": {
+        "question": "Quelles langues parle l'IA?",
+        "answer": "Actuellement néerlandais et anglais. L'IA détecte automatiquement la langue du client et répond dans la même langue. Plus de langues bientôt disponibles."
+      }
+    }
   },
   "auth": {
     "signup": {
@@ -32,6 +113,11 @@
       "business_name": "Nom de l'Entreprise",
       "email": "Adresse E-mail",
       "password": "Mot de Passe",
+      "password_min": "Minimum 8 caractères",
+      "confirm_password": "Confirmer le Mot de Passe",
+      "confirm_password_placeholder": "Répétez votre mot de passe",
+      "plan": "Choisissez Votre Forfait",
+      "terms": "J'accepte les conditions d'utilisation",
       "submit": "Créer Mon Compte",
       "have_account": "Vous avez déjà un compte?",
       "login_link": "Se Connecter"
@@ -39,9 +125,85 @@
     "login": {
       "title": "Bon Retour",
       "subtitle": "Connectez-vous à votre compte",
+      "email": "Adresse E-mail",
+      "password": "Mot de Passe",
+      "remember": "Se souvenir de moi",
+      "forgot_password": "Mot de passe oublié?",
       "submit": "Se Connecter",
       "no_account": "Vous n'avez pas de compte?",
       "signup_link": "S'inscrire"
+    }
+  },
+  "setup": {
+    "progress": "Étape {{current}} sur {{total}}",
+    "next": "Suivant",
+    "back": "Précédent",
+    "step1": {
+      "title": "Détails de l'Entreprise",
+      "subtitle": "Parlez-nous de votre entreprise",
+      "business_name": "Nom de l'Entreprise",
+      "business_type": "Type d'Entreprise",
+      "select_type": "Sélectionner un type...",
+      "types": {
+        "restaurant": "Restaurant",
+        "hair_salon": "Salon de Coiffure",
+        "barber": "Barbier",
+        "dental_clinic": "Clinique Dentaire",
+        "physiotherapy": "Physiothérapie",
+        "auto_repair": "Réparation Automobile",
+        "beauty_salon": "Salon de Beauté",
+        "retail_shop": "Magasin de Détail",
+        "other": "Autre"
+      },
+      "address": "Adresse",
+      "website": "Site Web (optionnel)",
+      "owner_phone": "Numéro de Téléphone du Propriétaire",
+      "owner_phone_help": "Pour les transferts d'appels et les notifications"
+    },
+    "step2": {
+      "title": "Services et Informations",
+      "subtitle": "Que devrait savoir votre réceptionniste IA?",
+      "description": "Description des services et tarifs",
+      "description_placeholder": "Décrivez vos services, menu, tarifs, FAQ et autres informations importantes...",
+      "fill_example": "Remplir l'exemple",
+      "opening_hours": "Heures d'Ouverture",
+      "languages": "Langues",
+      "dutch": "Néerlandais",
+      "english": "Anglais"
+    },
+    "step3": {
+      "title": "Règles Spéciales",
+      "subtitle": "Y a-t-il des directives spécifiques que votre IA devrait suivre?",
+      "special_rules": "Règles et exceptions spéciales (optionnel)",
+      "special_rules_placeholder": "Par exemple: 'Pas de livraisons après 21h30' ou 'Tom ne fait que des colorations'",
+      "greeting": "Message d'Accueil (optionnel)",
+      "greeting_placeholder": "Laisser vide pour le message par défaut",
+      "backup_phone": "Numéro de téléphone de secours (optionnel)",
+      "backup_phone_help": "Pour les transferts d'appels (peut être le même que le numéro du propriétaire)"
+    },
+    "step4": {
+      "title": "Méthode de Connexion",
+      "subtitle": "Comment souhaitez-vous rendre votre réceptionniste IA disponible?",
+      "option_forward": "Transférer mon numéro d'entreprise existant (recommandé)",
+      "option_forward_desc": "Conservez votre numéro actuel. Configurez simplement le transfert d'appel vers notre numéro IA.",
+      "option_new": "Obtenir un nouveau numéro",
+      "option_new_desc": "Nous vous attribuerons un numéro de téléphone néerlandais que vous pourrez mettre sur votre site web et vos cartes de visite.",
+      "forward_to": "Transférez votre numéro vers:",
+      "instructions": "Configurer le transfert d'appel:",
+      "new_number_info": "Notre équipe vous attribuera un numéro dans les 24 heures. Vous recevrez un e-mail une fois votre numéro prêt."
+    },
+    "step5": {
+      "title": "Vérifier et Activer",
+      "subtitle": "Vérifiez vos informations avant d'activer",
+      "business_info": "Informations sur l'Entreprise",
+      "services": "Services",
+      "connection": "Connexion",
+      "languages_label": "Langues:",
+      "hours_label": "Heures d'Ouverture:",
+      "edit": "Modifier",
+      "ready_title": "Prêt à commencer?",
+      "ready_desc": "Après avoir activé votre réceptionniste IA, vous pouvez immédiatement commencer à recevoir des appels et des chats. Vous pouvez ajuster tous les paramètres plus tard via votre tableau de bord.",
+      "activate": "Activer Mon Réceptionniste IA"
     }
   },
   "common": {
@@ -50,6 +212,57 @@
     "loading": "Chargement...",
     "error": "Une erreur s'est produite",
     "success": "Succès!",
-    "edit": "Modifier"
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "contact_support": "Contactez-nous à info@youraisolution.nl pour obtenir de l'aide"
+  },
+  "demo": {
+    "cta_title": "Vous voulez ceci pour votre entreprise?",
+    "cta_subtitle": "Commencez aujourd'hui avec 7 jours gratuits - aucune carte de crédit requise!",
+    "cta_button": "Créer un Compte Gratuit",
+    "title": "Démo de Test Rapide",
+    "subtitle": "Remplissez les détails de votre entreprise et testez comment l'IA gère les questions des clients",
+    "disclaimer": "<strong>Remarque:</strong> Ceci est uniquement pour tester. <a href=\"/signup\" class=\"text-purple-600 hover:underline font-semibold\">Créez un compte</a> pour un accès complet et votre propre numéro de téléphone.",
+    "business_name": "Nom de l'Entreprise",
+    "business_name_placeholder": "par ex., Restaurant Italien de Bella",
+    "business_type": "Type d'Entreprise",
+    "business_type_select": "Sélectionner un type...",
+    "business_types": {
+      "restaurant": "Restaurant",
+      "salon": "Salon",
+      "clinic": "Clinique",
+      "shop": "Magasin",
+      "other": "Autre"
+    },
+    "business_description": "Description de l'Entreprise",
+    "business_description_placeholder": "Décrivez votre menu, services, tarifs, spécialités, etc. Plus vous fournissez de détails, mieux l'IA peut aider vos clients!",
+    "opening_hours": "Heures d'Ouverture",
+    "opening_hours_placeholder": "par ex., Lundi-Vendredi: 9h-18h, Samedi: 10h-16h, Dimanche: Fermé",
+    "languages": "Langues",
+    "language_dutch": "Néerlandais",
+    "language_english": "Anglais",
+    "special_rules": "Règles ou Instructions Spéciales",
+    "special_rules_placeholder": "par ex., Pas de réservations le dimanche, Demander les restrictions alimentaires, Toujours mentionner notre programme de fidélité",
+    "submit_button": "Commencer à Tester Votre Réceptionniste IA",
+    "chat": {
+      "title": "Testez Votre Réceptionniste IA",
+      "subtitle": "Posez des questions comme si vous étiez un client!",
+      "greeting": "Bonjour! Je suis le réceptionniste IA pour <span id=\"business-name-display\" class=\"font-semibold\"></span>. Comment puis-je vous aider aujourd'hui?",
+      "input_placeholder": "Tapez votre message...",
+      "send_button": "Envoyer",
+      "reset_button": "← Recommencer avec une Nouvelle Entreprise",
+      "phone_trial_button": "Essayer un Appel Téléphonique avec Votre Agent IA"
+    },
+    "phone": {
+      "title": "Appelez Votre Agent IA Maintenant!",
+      "subtitle": "Composez le numéro ci-dessous pour parler avec votre réceptionniste IA pour",
+      "call_label": "Appelez ce numéro:",
+      "trial_note": "<strong>Essai Gratuit:</strong> Maximum 3 minutes par numéro de téléphone",
+      "instructions": "L'IA répondra en tant que réceptionniste de votre entreprise. Posez des questions sur les services, les heures, les tarifs ou tout autre chose!",
+      "back_button": "← Retour au Chat"
+    }
   }
 }

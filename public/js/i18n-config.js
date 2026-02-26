@@ -92,8 +92,67 @@ function updateDirection(lang) {
   // Add/remove RTL class for styling
   if (direction === 'rtl') {
     document.body.classList.add('rtl');
+    addRTLStyles();
   } else {
     document.body.classList.remove('rtl');
+    removeRTLStyles();
+  }
+}
+
+// Add RTL-specific styles dynamically
+function addRTLStyles() {
+  // Check if RTL styles already exist
+  if (document.getElementById('rtl-styles')) return;
+
+  const style = document.createElement('style');
+  style.id = 'rtl-styles';
+  style.textContent = `
+    /* RTL spacing fixes for navigation */
+    body.rtl nav .space-x-6 > * + * {
+      margin-left: 0 !important;
+      margin-right: 1.5rem !important;
+    }
+
+    /* RTL fixes for buttons and inline elements */
+    body.rtl .flex.gap-4 > * + * {
+      margin-right: 1rem !important;
+    }
+
+    /* RTL language switcher spacing */
+    body.rtl #language-button .flag-spacing {
+      margin-right: 0 !important;
+      margin-left: 0.5rem !important;
+    }
+
+    body.rtl #language-button .arrow-spacing {
+      margin-left: 0 !important;
+      margin-right: 0.5rem !important;
+    }
+
+    /* RTL dropdown spacing */
+    body.rtl #language-dropdown button .flag-spacing {
+      margin-right: 0 !important;
+      margin-left: 0.75rem !important;
+    }
+
+    body.rtl #language-dropdown button .check-spacing {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+    }
+
+    /* RTL mobile menu spacing */
+    body.rtl #mobile-menu .space-y-2 > * {
+      margin-right: 0.5rem !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Remove RTL-specific styles
+function removeRTLStyles() {
+  const style = document.getElementById('rtl-styles');
+  if (style) {
+    style.remove();
   }
 }
 
@@ -129,9 +188,9 @@ function setupLanguageSwitcher() {
       <button type="button"
               id="language-button"
               class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-        <span class="mr-2">${currentLangInfo.flag}</span>
+        <span class="mr-2 flag-spacing">${currentLangInfo.flag}</span>
         <span>${currentLangInfo.name}</span>
-        <svg class="w-5 h-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <svg class="w-5 h-5 ml-2 -mr-1 arrow-spacing" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
         </svg>
       </button>
@@ -143,9 +202,9 @@ function setupLanguageSwitcher() {
               type="button"
               onclick="changeLanguage('${code}')"
               class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${code === currentLang ? 'bg-blue-50 font-semibold' : ''}">
-              <span class="mr-3">${info.flag}</span>
+              <span class="mr-3 flag-spacing">${info.flag}</span>
               <span>${info.name}</span>
-              ${code === currentLang ? '<svg class="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>' : ''}
+              ${code === currentLang ? '<svg class="w-4 h-4 ml-auto check-spacing text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>' : ''}
             </button>
           `).join('')}
         </div>
@@ -175,9 +234,9 @@ function updateLanguageSwitcherDisplay(lang) {
 
   const langInfo = SUPPORTED_LANGUAGES[lang];
   button.innerHTML = `
-    <span class="mr-2">${langInfo.flag}</span>
+    <span class="mr-2 flag-spacing">${langInfo.flag}</span>
     <span>${langInfo.name}</span>
-    <svg class="w-5 h-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+    <svg class="w-5 h-5 ml-2 -mr-1 arrow-spacing" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
       <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
     </svg>
   `;

@@ -15,6 +15,25 @@
     "cta_pricing": "Preise Ansehen",
     "trial_note": "7 Tage kostenlos • Keine Kreditkarte erforderlich"
   },
+  "features": {
+    "title": "Warum Your AI Solution Wählen?",
+    "chat": {
+      "title": "KI-Web-Chat",
+      "description": "Integrieren Sie KI-Chat auf Ihrer Website"
+    },
+    "phone": {
+      "title": "Telefonrezeption",
+      "description": "Anrufe automatisch rund um die Uhr beantworten"
+    },
+    "multilingual": {
+      "title": "Mehrsprachig",
+      "description": "Unterstützt mehrere Sprachen"
+    },
+    "appointments": {
+      "title": "Terminbuchung",
+      "description": "Termine automatisch planen"
+    }
+  },
   "pricing": {
     "title": "Einfache, Transparente Preise",
     "subtitle": "Beginnen Sie mit einer 7-tägigen kostenlosen Testversion. Keine Kreditkarte erforderlich.",
@@ -23,7 +42,69 @@
     "yearly_save": "(2 Monate sparen!)",
     "per_month": "/Monat",
     "most_popular": "Am Beliebtesten",
-    "start_trial": "Kostenlose Testversion Starten"
+    "start_trial": "Kostenlose Testversion Starten",
+    "starter": {
+      "name": "Starter",
+      "price": "€69",
+      "features": [
+        "KI-Web-Chat-Widget für Ihre Website",
+        "Bis zu 300 Gespräche pro Monat",
+        "Tägliche E-Mail-Zusammenfassung",
+        "E-Mail-Support"
+      ]
+    },
+    "professional": {
+      "name": "Professional",
+      "price": "€129",
+      "features": [
+        "Alles von Starter",
+        "KI-Telefonrezeption",
+        "Terminbuchung",
+        "Anrufweiterleitung an Ihr Telefon",
+        "Echtzeit-SMS-Benachrichtigungen",
+        "Bis zu 1000 Gespräche pro Monat",
+        "Prioritäts-Support"
+      ]
+    },
+    "business": {
+      "name": "Business",
+      "price": "€199",
+      "features": [
+        "Alles von Professional",
+        "WhatsApp-Integration (Demnächst)",
+        "Mehrere Telefonnummern",
+        "Benutzerdefinierte KI-Stimme und Persönlichkeit",
+        "Bis zu 3000 Gespräche pro Monat",
+        "Dedizierter Account Manager"
+      ]
+    },
+    "faq": {
+      "title": "Häufig Gestellte Fragen",
+      "q1": {
+        "question": "Kann ich meine bestehende Telefonnummer behalten?",
+        "answer": "Ja, absolut! Sie richten einfach eine Anrufweiterleitung von Ihrer aktuellen Nummer zu unserer KI-Nummer ein. Ihre Kunden rufen weiterhin Ihre vertraute Nummer an."
+      },
+      "q2": {
+        "question": "Wie funktioniert die kostenlose Testversion?",
+        "answer": "Sie erhalten 7 Tage kostenlosen Zugang zu allen Funktionen Ihres gewählten Pakets. Bei der Anmeldung ist keine Kreditkarte erforderlich. Nach der Testversion können Sie entscheiden, ob Sie fortfahren möchten."
+      },
+      "q3": {
+        "question": "Kann ich später den Plan wechseln?",
+        "answer": "Ja, Sie können jederzeit upgraden oder downgraden. Upgrades treten sofort in Kraft. Downgrades treten am Ende Ihrer aktuellen Abrechnungsperiode in Kraft."
+      },
+      "q4": {
+        "question": "Was passiert, wenn ich mein Gesprächslimit überschreite?",
+        "answer": "Wir benachrichtigen Sie, wenn Sie 80% Ihres Limits erreichen. Wenn Sie es überschreiten, können Sie upgraden oder Gespräche werden mit €0,15 pro Stück fortgesetzt. Der Service funktioniert weiter."
+      },
+      "q5": {
+        "question": "Gibt es einen Vertrag?",
+        "answer": "Kein Vertrag. Sie können jederzeit ohne Gebühren kündigen. Bei monatlicher Abrechnung endet der Service am Ende Ihrer bezahlten Periode."
+      },
+      "q6": {
+        "question": "Welche Sprachen spricht die KI?",
+        "answer": "Derzeit Niederländisch und Englisch. Die KI erkennt automatisch die Sprache des Kunden und antwortet in derselben Sprache. Weitere Sprachen kommen bald."
+      }
+    }
   },
   "auth": {
     "signup": {
@@ -32,6 +113,11 @@
       "business_name": "Firmenname",
       "email": "E-Mail-Adresse",
       "password": "Passwort",
+      "password_min": "Mindestens 8 Zeichen",
+      "confirm_password": "Passwort Bestätigen",
+      "confirm_password_placeholder": "Wiederholen Sie Ihr Passwort",
+      "plan": "Wählen Sie Ihr Paket",
+      "terms": "Ich akzeptiere die Nutzungsbedingungen",
       "submit": "Mein Konto Erstellen",
       "have_account": "Haben Sie bereits ein Konto?",
       "login_link": "Anmelden"
@@ -39,9 +125,85 @@
     "login": {
       "title": "Willkommen Zurück",
       "subtitle": "Melden Sie sich bei Ihrem Konto an",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "remember": "Angemeldet bleiben",
+      "forgot_password": "Passwort vergessen?",
       "submit": "Anmelden",
       "no_account": "Noch kein Konto?",
       "signup_link": "Registrieren"
+    }
+  },
+  "setup": {
+    "progress": "Schritt {{current}} von {{total}}",
+    "next": "Weiter",
+    "back": "Zurück",
+    "step1": {
+      "title": "Unternehmensdetails",
+      "subtitle": "Erzählen Sie uns von Ihrem Unternehmen",
+      "business_name": "Firmenname",
+      "business_type": "Unternehmenstyp",
+      "select_type": "Typ auswählen...",
+      "types": {
+        "restaurant": "Restaurant",
+        "hair_salon": "Friseursalon",
+        "barber": "Barbier",
+        "dental_clinic": "Zahnarztpraxis",
+        "physiotherapy": "Physiotherapie",
+        "auto_repair": "Autowerkstatt",
+        "beauty_salon": "Schönheitssalon",
+        "retail_shop": "Einzelhandelsgeschäft",
+        "other": "Andere"
+      },
+      "address": "Adresse",
+      "website": "Website (optional)",
+      "owner_phone": "Telefonnummer des Inhabers",
+      "owner_phone_help": "Für Anrufweiterleitungen und Benachrichtigungen"
+    },
+    "step2": {
+      "title": "Dienstleistungen und Informationen",
+      "subtitle": "Was sollte Ihre KI-Rezeption wissen?",
+      "description": "Beschreibung der Dienstleistungen und Preise",
+      "description_placeholder": "Beschreiben Sie Ihre Dienstleistungen, Speisekarte, Preise, FAQs und andere wichtige Informationen...",
+      "fill_example": "Beispiel ausfüllen",
+      "opening_hours": "Öffnungszeiten",
+      "languages": "Sprachen",
+      "dutch": "Niederländisch",
+      "english": "Englisch"
+    },
+    "step3": {
+      "title": "Besondere Regeln",
+      "subtitle": "Gibt es spezifische Richtlinien, die Ihre KI befolgen sollte?",
+      "special_rules": "Besondere Regeln und Ausnahmen (optional)",
+      "special_rules_placeholder": "Zum Beispiel: 'Keine Lieferungen nach 21:30 Uhr' oder 'Tom macht nur Farbbehandlungen'",
+      "greeting": "Begrüßung (optional)",
+      "greeting_placeholder": "Leer lassen für Standardbegrüßung",
+      "backup_phone": "Backup-Telefonnummer (optional)",
+      "backup_phone_help": "Für Anrufweiterleitungen (kann dieselbe wie Inhabernummer sein)"
+    },
+    "step4": {
+      "title": "Verbindungsmethode",
+      "subtitle": "Wie möchten Sie Ihre KI-Rezeption verfügbar machen?",
+      "option_forward": "Meine bestehende Geschäftsnummer weiterleiten (empfohlen)",
+      "option_forward_desc": "Behalten Sie Ihre aktuelle Nummer. Richten Sie einfach eine Anrufweiterleitung zu unserer KI-Nummer ein.",
+      "option_new": "Neue Nummer erhalten",
+      "option_new_desc": "Wir weisen Ihnen eine niederländische Telefonnummer zu, die Sie auf Ihrer Website und Visitenkarten verwenden können.",
+      "forward_to": "Leiten Sie Ihre Nummer weiter an:",
+      "instructions": "Anrufweiterleitung einrichten:",
+      "new_number_info": "Unser Team wird Ihnen innerhalb von 24 Stunden eine Nummer zuweisen. Sie erhalten eine E-Mail, sobald Ihre Nummer bereit ist."
+    },
+    "step5": {
+      "title": "Überprüfen und Aktivieren",
+      "subtitle": "Überprüfen Sie Ihre Informationen vor der Aktivierung",
+      "business_info": "Unternehmensinformationen",
+      "services": "Dienstleistungen",
+      "connection": "Verbindung",
+      "languages_label": "Sprachen:",
+      "hours_label": "Öffnungszeiten:",
+      "edit": "Bearbeiten",
+      "ready_title": "Bereit loszulegen?",
+      "ready_desc": "Nach der Aktivierung Ihrer KI-Rezeption können Sie sofort Anrufe und Chats empfangen. Sie können alle Einstellungen später über Ihr Dashboard anpassen.",
+      "activate": "Meine KI-Rezeption Aktivieren"
     }
   },
   "common": {
@@ -50,6 +212,57 @@
     "loading": "Lädt...",
     "error": "Ein Fehler ist aufgetreten",
     "success": "Erfolg!",
-    "edit": "Bearbeiten"
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "contact_support": "Kontaktieren Sie uns unter info@youraisolution.nl für Hilfe"
+  },
+  "demo": {
+    "cta_title": "Möchten Sie dies für Ihr Unternehmen?",
+    "cta_subtitle": "Starten Sie heute mit 7 Tagen kostenlos - keine Kreditkarte erforderlich!",
+    "cta_button": "Kostenloses Konto Erstellen",
+    "title": "Schnelle Test-Demo",
+    "subtitle": "Geben Sie Ihre Unternehmensdetails ein und testen Sie, wie die KI Kundenfragen behandelt",
+    "disclaimer": "<strong>Hinweis:</strong> Dies ist nur zum Testen. <a href=\"/signup\" class=\"text-purple-600 hover:underline font-semibold\">Erstellen Sie ein Konto</a> für vollen Zugriff und Ihre eigene Telefonnummer.",
+    "business_name": "Firmenname",
+    "business_name_placeholder": "z.B. Bellas Italienisches Restaurant",
+    "business_type": "Unternehmenstyp",
+    "business_type_select": "Typ auswählen...",
+    "business_types": {
+      "restaurant": "Restaurant",
+      "salon": "Salon",
+      "clinic": "Klinik",
+      "shop": "Geschäft",
+      "other": "Andere"
+    },
+    "business_description": "Unternehmensbeschreibung",
+    "business_description_placeholder": "Beschreiben Sie Ihre Speisekarte, Dienstleistungen, Preise, Spezialitäten usw. Je mehr Details, desto besser kann die KI Ihren Kunden helfen!",
+    "opening_hours": "Öffnungszeiten",
+    "opening_hours_placeholder": "z.B. Montag-Freitag: 9:00-18:00 Uhr, Samstag: 10:00-16:00 Uhr, Sonntag: Geschlossen",
+    "languages": "Sprachen",
+    "language_dutch": "Niederländisch",
+    "language_english": "Englisch",
+    "special_rules": "Besondere Regeln oder Anweisungen",
+    "special_rules_placeholder": "z.B. Keine Buchungen sonntags, Nach diätetischen Einschränkungen fragen, Immer unser Treueprogramm erwähnen",
+    "submit_button": "Starten Sie das Testen Ihrer KI-Rezeption",
+    "chat": {
+      "title": "Testen Sie Ihre KI-Rezeption",
+      "subtitle": "Stellen Sie Fragen, als wären Sie ein Kunde!",
+      "greeting": "Hallo! Ich bin die KI-Rezeption für <span id=\"business-name-display\" class=\"font-semibold\"></span>. Wie kann ich Ihnen heute helfen?",
+      "input_placeholder": "Geben Sie Ihre Nachricht ein...",
+      "send_button": "Senden",
+      "reset_button": "← Von vorne mit neuem Unternehmen beginnen",
+      "phone_trial_button": "Probieren Sie einen Anruf mit Ihrem KI-Agenten"
+    },
+    "phone": {
+      "title": "Rufen Sie Jetzt Ihren KI-Agenten an!",
+      "subtitle": "Wählen Sie die unten stehende Nummer, um mit Ihrer KI-Rezeption zu sprechen für",
+      "call_label": "Rufen Sie diese Nummer an:",
+      "trial_note": "<strong>Kostenlose Testversion:</strong> Maximal 3 Minuten pro Telefonnummer",
+      "instructions": "Die KI wird als Ihre Geschäftsrezeption antworten. Stellen Sie Fragen zu Dienstleistungen, Öffnungszeiten, Preisen oder allem anderen!",
+      "back_button": "← Zurück zum Chat"
+    }
   }
 }
